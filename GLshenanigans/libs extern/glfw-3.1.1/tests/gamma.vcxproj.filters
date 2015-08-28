@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Quinn.mosher\Documents\GitHub\GL3DPractice\GLshenanigans\GLshenanigans\libs\glfw-3.1.1\tests\gamma.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Quinn.mosher\Documents\GitHub\GL3DPractice\GLshenanigans\GLshenanigans\libs\glfw-3.1.1\deps\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Quinn.mosher\Documents\GitHub\GL3DPractice\GLshenanigans\GLshenanigans\libs\glfw-3.1.1\deps\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Quinn.mosher\Documents\GitHub\GL3DPractice\GLshenanigans\GLshenanigans\libs\glfw-3.1.1\tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{C0DB2653-BD2A-47CE-A81F-8397AB0FA86F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{D2D970EF-1BF8-4D65-B0FE-E85BFBB9DC8A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
