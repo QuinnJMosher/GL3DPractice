@@ -21,15 +21,21 @@
     <ClInclude Include="include\gl_core_4_4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Gizmos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="source\gl_core_4_4.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\gl_core_4_4.c">
+    <ClCompile Include="source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
