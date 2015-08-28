@@ -1,4 +1,5 @@
-#include <aie/Gizmos.h>
+//#include <aie/Gizmos.h>
+#include <Gizmos.h>
 #include <gl_core_4_4.h>
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>

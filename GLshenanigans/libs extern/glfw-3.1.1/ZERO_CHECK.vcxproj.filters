@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Quinn.mosher\Documents\GitHub\GL3DPractice\GLshenanigans\GLshenanigans\libs\glfw-3.1.1\CMakeFiles\6de06a4be3abe0222017f962a34d03f2\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{00C5B296-AC9E-488E-872D-DB451AC1294B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
