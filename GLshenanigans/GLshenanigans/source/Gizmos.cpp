@@ -531,10 +531,11 @@ void Gizmos::addArcRing(const glm::vec3& a_center, float a_rotation,
 	}
 }
 
-void Gizmos::addSphere(const glm::vec3& a_center, float a_radius, int a_rows, int a_columns, const glm::vec4& a_fillColour, 
+void Gizmos::addSphere(const glm::vec3& b_center, float a_radius, int a_rows, int a_columns, const glm::vec4& a_fillColour, 
 								const glm::mat4* a_transform /*= nullptr*/, float a_longMin /*= 0.f*/, float a_longMax /*= 360*/, 
 								float a_latMin /*= -90*/, float a_latMax /*= 90*/)
 {
+	auto a_center = b_center;
 	float inverseRadius = 1/a_radius;
 	//Invert these first as the multiply is slightly quicker
 	float invColumns = 1.0f/float(a_columns);
@@ -565,6 +566,7 @@ void Gizmos::addSphere(const glm::vec3& a_center, float a_radius, int a_rows, in
 
 			if (a_transform != nullptr)
 			{
+				a_center = (*a_transform)[3].xyz;
 				v4Point = (*a_transform * glm::vec4(v4Point, 0)).xyz();
 				v4Normal = (*a_transform * glm::vec4(v4Normal, 0)).xyz();
 			}
