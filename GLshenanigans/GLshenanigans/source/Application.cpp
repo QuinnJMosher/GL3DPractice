@@ -34,6 +34,9 @@ bool Application::Start() {
 	//settings
 	glClearColor(set_clearScr_r, set_clearScr_g, set_clearScr_b, set_clearScr_a);
 
+	//ready planets
+	planet = Planet(vec3(0, 0, 0), 1);
+
 	//if all good
 	return true;
 }
@@ -50,6 +53,8 @@ bool Application::Update()
 	if (glfwWindowShouldClose(window)) {
 		return false;
 	}
+
+	planet.update(0);
 
 	return true;
 }
@@ -70,6 +75,8 @@ void Application::Draw() {
 	if (drawsCentre) {
 		DrawCentre();
 	}
+
+	Planet::Draw(planet);
 
 	//draw
 	Gizmos::draw(projection * view);
