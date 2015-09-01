@@ -8,8 +8,6 @@
 #include <Gizmos.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-//my classes
-#include <Planet.h>
 
 //declare glm types
 using glm::vec3;
@@ -31,10 +29,6 @@ private:
 	//easy drawing
 	void DrawGrid();
 	void DrawCentre();
-
-	//logic vars
-	Planet planet;
-
 	//active variables
 	GLFWwindow* window;
 	mat4 view;
