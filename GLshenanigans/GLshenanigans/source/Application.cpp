@@ -36,6 +36,8 @@ bool Application::Start() {
 
 	//ready planets
 	planet = Planet(vec3(0, 0, 0), 1);
+	moon = Planet(vec3(0, 3, 0), 0.5f);
+	moon.parent = &planet;
 
 	//if all good
 	return true;
@@ -54,7 +56,8 @@ bool Application::Update()
 		return false;
 	}
 
-	planet.update(0);
+	planet.update(glfwGetTime());
+	moon.update(glfwGetTime());
 
 	return true;
 }
@@ -77,6 +80,7 @@ void Application::Draw() {
 	}
 
 	Planet::Draw(planet);
+	Planet::Draw(moon);
 
 	//draw
 	Gizmos::draw(projection * view);

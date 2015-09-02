@@ -34,6 +34,7 @@ private:
 
 	//logic vars
 	Planet planet;
+	Planet moon;
 
 	//active variables
 	GLFWwindow* window;

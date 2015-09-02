@@ -24,7 +24,7 @@ public:
 	float radius;
 	glm::vec4 color;
 	glm::vec3 rotation;
-	glm::mat4* parentMat;
+	Planet* parent;
 	glm::mat4 globalMat;
 	glm::mat4 localMat;
 	static int detail;
