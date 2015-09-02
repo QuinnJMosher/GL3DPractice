@@ -7,7 +7,10 @@ Planet::Planet() {
 	radius = 1;
 	color = glm::vec4(0.5f, 0.5f, 0.5f, 1);
 	rotation = glm::vec3();
-	transfomMat = glm::mat4();
+
+	globalMat = glm::mat4();
+	localMat = glm::mat4();
+	parentMat = nullptr;
 }
 
 Planet::Planet(const glm::vec3 in_position, const float in_radius, const glm::vec4 in_color) {
@@ -15,7 +18,9 @@ Planet::Planet(const glm::vec3 in_position, const float in_radius, const glm::ve
 	radius = in_radius;
 	color = in_color;
 
-	transfomMat = glm::mat4();
+	globalMat = glm::mat4();
+	localMat = glm::mat4();
+	parentMat = nullptr;
 }
 
 Planet::~Planet() { }
@@ -23,10 +28,11 @@ Planet::~Planet() { }
 void Planet::update(float in_time) {
 	//orbit then rotation
 
-	//create rotation mats
-	glm::mat4 rotationMat = glm::rotate(1.0f, rotation);
-
-	transfomMat = rotationMat;//evrybody mult'ed together
+	//global
+	//transform
+	//orbit
+	//local
+	//rotate
 
 }
 
