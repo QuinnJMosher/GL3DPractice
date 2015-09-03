@@ -11,6 +11,7 @@
 //my classes
 #include <Planet.h>
 #include <Camera.h>
+#include <FlyCamera.h>
 
 //declare glm types
 using glm::vec3;
@@ -34,7 +35,7 @@ private:
 	void DrawCentre();
 
 	//logic vars
-	Camera camera;
+	FlyCamera camera;
 	Planet planet;
 	Planet moon;
 
