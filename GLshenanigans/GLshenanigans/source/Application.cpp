@@ -28,6 +28,8 @@ bool Application::Start() {
 	//ready Gizmos
 	Gizmos::create();
 
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	//fly cam only
 	camera.inputContext = window;
 	camera.setSpeed(10.0f);
