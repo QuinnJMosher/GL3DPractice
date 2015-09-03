@@ -36,7 +36,8 @@ bool Application::Start() {
 
 	//ready planets
 	planet = Planet(vec3(0, 0, 0), 1);
-	moon = Planet(vec3(0, 3, 0), 0.5f);
+	moon = Planet(vec3(2, 0, 0), 0.11f);
+	moon.orbit = 3;
 	moon.parent = &planet;
 
 	//if all good
