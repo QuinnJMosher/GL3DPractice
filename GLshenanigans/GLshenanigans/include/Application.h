@@ -10,6 +10,8 @@
 #include <glm/ext.hpp>
 //my classes
 #include <Planet.h>
+#include <Camera.h>
+#include <FlyCamera.h>
 
 //declare glm types
 using glm::vec3;
@@ -33,6 +35,7 @@ private:
 	void DrawCentre();
 
 	//logic vars
+	FlyCamera camera;
 	Planet planet;
 	Planet moon;
 
@@ -40,6 +43,11 @@ private:
 	GLFWwindow* window;
 	mat4 view;
 	mat4 projection;
+
+	//time vars
+	float totalTime;
+	float lastTime;
+	float deltaTime;
 
 	//settings
 	//window
