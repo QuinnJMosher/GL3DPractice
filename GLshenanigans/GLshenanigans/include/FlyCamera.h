@@ -14,8 +14,10 @@ public:
 	virtual void setLookAt(vec3 in_from, vec3 in_to, vec3 in_up);
 
 	GLFWwindow* inputContext;
+	float rotateSensitivity;
 private:
 	float speed;
+	//float rotateSensitivity;
 	vec3 up;
 	vec3 forward;
 	vec3 right;
