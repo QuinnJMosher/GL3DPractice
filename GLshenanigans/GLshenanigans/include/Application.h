@@ -10,6 +10,7 @@
 #include <glm/ext.hpp>
 //my classes
 #include <Planet.h>
+#include <Camera.h>
 
 //declare glm types
 using glm::vec3;
@@ -33,6 +34,7 @@ private:
 	void DrawCentre();
 
 	//logic vars
+	Camera camera;
 	Planet planet;
 	Planet moon;
 

@@ -30,6 +30,8 @@ bool Application::Start() {
 
 	/*mat4*/ view = glm::lookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	/*mat4*/ projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
+	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
+	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
 	//settings
 	glClearColor(set_clearScr_r, set_clearScr_g, set_clearScr_b, set_clearScr_a);
@@ -84,7 +86,10 @@ void Application::Draw() {
 	Planet::Draw(moon);
 
 	//draw
-	Gizmos::draw(projection * view);
+	//Gizmos::draw(camera.getProjectionView());
+	Gizmos::draw(camera.getProjection() * camera.getWorldTransform());
+	//Gizmos::draw(projection * view);
+	
 
 	//glfw update
 	glfwSwapBuffers(window);
