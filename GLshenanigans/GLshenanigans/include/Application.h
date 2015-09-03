@@ -43,6 +43,11 @@ private:
 	mat4 view;
 	mat4 projection;
 
+	//time vars
+	float totalTime;
+	float lastTime;
+	float deltaTime;
+
 	//settings
 	//window
 	const int set_window_width = 1280;

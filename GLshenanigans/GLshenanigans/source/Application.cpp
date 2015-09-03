@@ -28,8 +28,6 @@ bool Application::Start() {
 	//ready Gizmos
 	Gizmos::create();
 
-	/*mat4*/ view = glm::lookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
-	/*mat4*/ projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
@@ -41,6 +39,8 @@ bool Application::Start() {
 	moon = Planet(vec3(2, 0, 0), 0.11f);
 	moon.orbit = 3;
 	moon.parent = &planet;
+
+	lastTime = glfwGetTime();
 
 	//if all good
 	return true;
@@ -59,9 +59,15 @@ bool Application::Update()
 		return false;
 	}
 
+	totalTime = glfwGetTime();
+	deltaTime = totalTime - lastTime;
+
+	camera.update(deltaTime);
+
 	planet.update(glfwGetTime());
 	moon.update(glfwGetTime());
 
+	lastTime = totalTime;
 	return true;
 }
 
@@ -86,11 +92,8 @@ void Application::Draw() {
 	Planet::Draw(moon);
 
 	//draw
-	//Gizmos::draw(camera.getProjectionView());
-	Gizmos::draw(camera.getProjection() * camera.getWorldTransform());
-	//Gizmos::draw(projection * view);
+	Gizmos::draw(camera.getProjectionView());
 	
-
 	//glfw update
 	glfwSwapBuffers(window);
 	glfwPollEvents();

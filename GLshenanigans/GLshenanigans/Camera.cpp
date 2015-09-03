@@ -7,7 +7,7 @@ void Camera::setPerspective(float in_FOV, float in_aspectRatio, float in_near, f
 	projectionTransform = glm::perspective(in_FOV, in_aspectRatio, in_near, in_far);
 }
 void Camera::setLookAt(vec3 in_from, vec3 in_to, vec3 in_up) {
-	worldTransform = glm::lookAt(in_from, in_to, in_up);
+	worldTransform = glm::inverse(glm::lookAt(in_from, in_to, in_up));
 }
 void Camera::setPosition(vec3 in_position) {
 	worldTransform = glm::translate(in_position);
