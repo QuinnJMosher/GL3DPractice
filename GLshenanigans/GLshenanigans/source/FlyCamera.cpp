@@ -20,15 +20,15 @@ void FlyCamera::update(float in_deltaTime) {
 	//create the movement vector
 	mat4 totalMovementMat = glm::translate((forward * input_UD) + (right * input_RL));
 
-	worldTransform = worldTransform * totalMovementMat;
+	worldTransform = totalMovementMat * worldTransform;
 }
 void FlyCamera::setSpeed(float in_speed) {
 	speed = in_speed;
 }
 void FlyCamera::setLookAt(vec3 in_from, vec3 in_to, vec3 in_up) {
 	up = in_up;
-	forward = glm::normalize(in_from - in_to);
-	right = glm::cross(up, forward);
+	forward = glm::normalize((in_from - in_to) * -1);
+	right = glm::cross(forward, up);
 	this->Camera::setLookAt(in_from, in_to, in_up);
 
 }
