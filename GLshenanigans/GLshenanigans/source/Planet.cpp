@@ -11,6 +11,7 @@ Planet::Planet() {
 	globalMat = glm::mat4();
 	localMat = glm::mat4();
 	parent = nullptr;
+	orbit = 1;
 }
 
 Planet::Planet(const glm::vec3 in_position, const float in_radius, const glm::vec4 in_color) {
@@ -23,6 +24,7 @@ Planet::Planet(const glm::vec3 in_position, const float in_radius, const glm::ve
 	globalMat = glm::mat4();
 	localMat = glm::mat4();
 	parent = nullptr;
+	orbit = 1;
 }
 
 Planet::~Planet() { }
@@ -35,7 +37,9 @@ void Planet::update(float in_time) {
 	glm::mat4 translateMat = glm::translate(position);
 	//orbit
 	if (parent != nullptr) {
-		globalMat = translateMat * glm::rotate(glm::mat4(), in_time, vec3(0, 1, 0)) * parent->globalMat;
+		globalMat = parent->globalMat														//parent's orbi							 
+							* glm::rotate(in_time * orbit, vec3(0, 1, 0))
+							* translateMat; // orbit
 	}
 	else {
 		globalMat = translateMat;
@@ -44,9 +48,6 @@ void Planet::update(float in_time) {
 	//local
 	//rotate
 	localMat = glm::rotate(glm::mat4(), in_time, rotation);
-
-	//globalMat = glm::translate(position);
-	//localMat = glm::rotate(glm::mat4(), in_time, vec3(0, 1, 0));
 }
 
 void Planet::Draw(Planet& ref_target) {
