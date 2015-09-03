@@ -73,6 +73,11 @@
     <SourcePath>$(VC_SourcePath);$(ProjectDir)/source</SourcePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(ProjectDir)/libs</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)/include</IncludePath>
+    <LibraryPath>$(ProjectDir)/libs;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)/source</SourcePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -91,9 +96,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)/additInclude</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,13 +132,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Application.h" />
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\FlyCamera.h" />
     <ClInclude Include="include\Gizmos.h" />
     <ClInclude Include="include\gl_core_4_4.h" />
+    <ClInclude Include="include\Planet.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\Application.cpp" />
+    <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\FlyCamera.cpp" />
     <ClCompile Include="source\Gizmos.cpp" />
     <ClCompile Include="source\gl_core_4_4.c" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Planet.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
