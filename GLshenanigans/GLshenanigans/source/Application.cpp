@@ -31,7 +31,7 @@ bool Application::Start() {
 	//fly cam only
 	camera.inputContext = window;
 	camera.setSpeed(10.0f);
-	camera.rotateSensitivity = 5.0f;
+	camera.rotateSensitivity = 1.0f;
 	//all camera
 	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);

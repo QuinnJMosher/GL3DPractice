@@ -5,6 +5,7 @@
 
 //glfw for input 'cause i'm lazy
 #include <GLFW\glfw3.h>
+using glm::vec2;
 
 class FlyCamera : public Camera
 {
@@ -21,6 +22,8 @@ private:
 	vec3 up;
 	vec3 forward;
 	vec3 right;
+
+	vec2 lastMousePos;
 	
 };
 

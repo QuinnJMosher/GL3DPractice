@@ -17,21 +17,29 @@ void FlyCamera::update(float in_deltaTime) {
 		input_RL += (speed * in_deltaTime);
 	}
 
+	
 	//get rotational input
-	float input_rotate_UD = 0;//up is positive
-	float input_rotate_RL = 0;//right is positive
-	if (glfwGetKey(inputContext, GLFW_KEY_UP) == GLFW_PRESS) {
-		input_rotate_UD += 1;
-	}
-	if (glfwGetKey(inputContext, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		input_rotate_UD -= 1;
-	}
-	if (glfwGetKey(inputContext, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		input_rotate_RL -= 1;
-	}
-	if (glfwGetKey(inputContext, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		input_rotate_RL += 1;
-	}
+	//get mouse pos
+	double curMouseX, curMouseY;
+	glfwGetCursorPos(inputContext, &curMouseX, &curMouseY);
+	vec2 deltaMouse = vec2(curMouseX - lastMousePos.x, curMouseY - lastMousePos.y);
+	lastMousePos = vec2(curMouseX, curMouseY);
+
+	///keyboard controls
+	//float input_rotate_UD = 0;//up is positive
+	//float input_rotate_RL = 0;//right is positive
+	//if (glfwGetKey(inputContext, GLFW_KEY_UP) == GLFW_PRESS) {
+	//	input_rotate_UD += 1;
+	//}
+	//if (glfwGetKey(inputContext, GLFW_KEY_DOWN) == GLFW_PRESS) {
+	//	input_rotate_UD -= 1;
+	//}
+	//if (glfwGetKey(inputContext, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	//	input_rotate_RL -= 1;
+	//}
+	//if (glfwGetKey(inputContext, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	//	input_rotate_RL += 1;
+	//}
 
 	//create the movement mat
 	mat4 totalMovementMat = glm::translate((forward * input_UD) + (right * input_RL));
@@ -42,8 +50,8 @@ void FlyCamera::update(float in_deltaTime) {
 	vec3 currentPos = vec3(worldTransform[3]);
 	//matke turn amt a vector;
 	vec3 inFrontOfMe = ((forward * 10) + currentPos);
-	vec3 turnRightLeft = glm::rotate(forward, (rotateSensitivity * in_deltaTime) * input_rotate_UD, right);
-	vec3 turnUpDown = glm::rotate(forward, (rotateSensitivity * in_deltaTime) * -input_rotate_RL, up);
+	vec3 turnRightLeft = glm::rotate(forward, (rotateSensitivity * in_deltaTime) * -deltaMouse.y, right);
+	vec3 turnUpDown = glm::rotate(forward, (rotateSensitivity * in_deltaTime) * -deltaMouse.x, up);
 	//turn camera
 	this->setLookAt(currentPos, inFrontOfMe + (turnRightLeft + turnUpDown) * 10, up);
 	
