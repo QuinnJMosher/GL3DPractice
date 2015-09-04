@@ -70,12 +70,35 @@ KeyState Input::GetKey(KeyCode in_key) {
 }
 
 bool Input::IsKey(KeyCode in_key, KeyState in_state) {
-
+	if (in_state == KeyState::Up) {
+		return (curKeyStates[in_key] == KeyState::Up || curKeyStates[in_key] == KeyState::Released);
+	}
+	else if (in_state == KeyState::Down) {
+		return (curKeyStates[in_key] == KeyState::Down || curKeyStates[in_key] == KeyState::Pressed);
+	}
+	return (curKeyStates[in_key] == in_state);
 }
 
 //mouse stuff
 
-KeyState Input::GetMouseButton(MouseButtonCode in_button);
-bool Input::IsMouseButton(MouseButtonCode in_button, KeyState in_state);
-vec2 Input::GetMousePos();
-vec2 Input::GetMouseDelta();
+KeyState Input::GetMouseButton(MouseButtonCode in_button) {
+	return curMouseStates[in_button];
+}
+
+bool Input::IsMouseButton(MouseButtonCode in_button, KeyState in_state) {
+	if (in_state == KeyState::Up) {
+		return (curMouseStates[in_button] == KeyState::Up || curMouseStates[in_button] == KeyState::Released);
+	}
+	else if (in_state == KeyState::Down) {
+		return (curMouseStates[in_button] == KeyState::Down || curMouseStates[in_button] == KeyState::Pressed);
+	}
+	return (curMouseStates[in_button] == in_state);
+}
+
+vec2 Input::GetMousePos() {
+	return curMousePos;
+}
+
+vec2 Input::GetMouseDelta() {
+	return deltaMousePos;
+}
