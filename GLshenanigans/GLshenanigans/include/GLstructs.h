@@ -1,0 +1,21 @@
+#ifndef _GLstructs_h_
+#define _GLstructs_h_
+
+#include "glm/glm.hpp"
+#include <glm/ext.hpp>
+using glm::vec4;
+
+struct Vertex
+{
+	vec4 position;
+	vec4 color;
+};
+
+struct GLdata {
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int IBO;
+	int indexCount;
+};
+
+#endif
