@@ -132,7 +132,7 @@ void QuickFunc::EasyReder(programID renderProgram, mat4 projViewMat, GLdata redn
 
 	glUniformMatrix4fv(projectionViewuniform, 1, false, glm::value_ptr(projViewMat));
 	glUniform1f(timeUniform, time);
-	glUniform1f(heigntScaleUniform, 3);
+	glUniform1f(heigntScaleUniform, 0);
 
 	glBindVertexArray(rednerData.VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

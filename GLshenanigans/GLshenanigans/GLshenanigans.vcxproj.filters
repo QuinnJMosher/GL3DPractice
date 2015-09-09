@@ -39,6 +39,9 @@
     <ClInclude Include="include\quickGLfuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\OBJHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Gizmos.cpp">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\quickGLfuncs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\OBJHandeler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
