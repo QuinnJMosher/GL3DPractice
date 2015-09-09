@@ -11,11 +11,12 @@ struct Vertex
 	vec4 color;
 };
 
+//RenderObject
 struct GLdata {
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int IBO;
-	int indexCount;
+	unsigned int indexCount;
 };
 
 #endif

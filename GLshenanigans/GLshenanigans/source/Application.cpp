@@ -42,10 +42,10 @@ bool Application::Start() {
 	glClearColor(set_clearScr_r, set_clearScr_g, set_clearScr_b, set_clearScr_a);
 
 	//ready planets
-	planet = Planet(vec3(0, 0, 0), 1);
-	moon = Planet(vec3(2, 0, 0), 0.11f);
-	moon.orbit = 3;
-	moon.parent = &planet;
+	//planet = Planet(vec3(0, 0, 0), 1);
+	//moon = Planet(vec3(2, 0, 0), 0.11f);
+	//moon.orbit = 3;
+	//moon.parent = &planet;
 
 	lastTime = glfwGetTime();
 
@@ -98,13 +98,13 @@ void Application::Draw() {
 		DrawCentre();
 	}
 
-	Planet::Draw(planet);
-	Planet::Draw(moon);
+	/*Planet::Draw(planet);
+	Planet::Draw(moon);*/
 
 	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid);
 
 	//draw
-	Gizmos::draw(camera.getProjectionView());
+	//Gizmos::draw(camera.getProjectionView());
 	
 	//glfw update
 	glfwSwapBuffers(window);

@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)/include</IncludePath>
-    <LibraryPath>$(ProjectDir)/libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)/libs;$(LibraryPath);$(ProjectDir)/libs</LibraryPath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)/source</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

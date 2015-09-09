@@ -3,7 +3,9 @@
 GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 
 	//generate positions
+	GLdata dataOut;
 	Vertex* aoVertices = new Vertex[rows * cols];
+	unsigned int* auiIndices = new unsigned int[(rows - 1) * (cols - 1) * 6];
 
 	for (unsigned int r = 0; r < rows; r++) {
 		for (unsigned int c = 0; c < cols; c++) {
@@ -16,8 +18,6 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 	}
 
 	//generate indices
-	unsigned int* auiIndices = new unsigned int[(rows - 1) * (cols - 1) * 6];
-	
 	unsigned int index = 0;
 	for (unsigned int r = 0; r < (rows - 1); r++) {
 		for (unsigned int c = 0; c < (cols - 1); c++) {
@@ -32,22 +32,21 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 		}
 	}
 
-	GLdata dataOut;
+	
 
 	dataOut.indexCount = (rows - 1) * (cols - 1) * 6;
 
 	//generate buffers
 	glGenBuffers(1, &(dataOut.VBO));
 	glGenBuffers(1, &(dataOut.IBO));
-
 	glGenVertexArrays(1, &(dataOut.VAO));
 
 	glBindVertexArray(dataOut.VAO);
-
-	//create vbo
 	glBindBuffer(GL_ARRAY_BUFFER, dataOut.VBO);
-	glBufferData(GL_ARRAY_BUFFER, (rows * cols) * sizeof(Vertex),
-				aoVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dataOut.IBO);
+	
+	glBufferData(GL_ARRAY_BUFFER, (rows * cols) * sizeof(Vertex), aoVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataOut.indexCount * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -55,22 +54,12 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(vec4)));
 
-	///unbind vbo
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//create ibo
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dataOut.IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataOut.indexCount * sizeof(unsigned int),
-				auiIndices, GL_STATIC_DRAW);
-
-	///unbind ibo
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	///unbind vbo
-	glBindVertexArray(0);
-
 	delete[] aoVertices;
-
+	delete[] auiIndices;
 	return dataOut;
 }
 
@@ -127,5 +116,6 @@ void QuickFunc::EasyReder(programID renderProgram, mat4 projViewMat, GLdata redn
 	glUniformMatrix4fv(projectionViewuniform, 1, false, glm::value_ptr(projViewMat));
 
 	glBindVertexArray(rednerData.VAO);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, rednerData.indexCount, GL_UNSIGNED_INT, 0);
 }
