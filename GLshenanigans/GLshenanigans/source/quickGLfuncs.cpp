@@ -72,6 +72,20 @@ programID QuickFunc::QuickRenderProg() {
 								uniform mat4 ProjectionView; \
 								void main() { vColour = Colour; gl_Position = ProjectionView * Position; }";
 
+	const char* vertexShaderSineWave = "#version 410\n \
+									in vec4 Position; \
+									in vec4 Colour; \
+									out vec4 vColour; \
+									uniform mat4 ProjectionView; \
+									uniform float time;\
+									uniform float heightScale;\
+									void main() { \
+										vColour = Colour; \
+										vec4 P = Position; \
+										P.y += sin(time + Position.x) * heightScale;\
+										gl_Position = ProjectionView * P; \
+									}";
+
 	const char* fragmentShaderSrc = "#version 410\n \
 									in vec4 vColour; \
 									out vec4 FragColor; \
@@ -81,7 +95,7 @@ programID QuickFunc::QuickRenderProg() {
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(vertexShader, 1, (const char**)&vertexShaderSrc, 0);
+	glShaderSource(vertexShader, 1, (const char**)&vertexShaderSineWave, 0);
 	glCompileShader(vertexShader);
 	glShaderSource(fragmentShader, 1, (const char**)&fragmentShaderSrc, 0);
 	glCompileShader(fragmentShader);
@@ -109,11 +123,16 @@ programID QuickFunc::QuickRenderProg() {
 	return newProgramID;
 }
 
-void QuickFunc::EasyReder(programID renderProgram, mat4 projViewMat, GLdata rednerData) {
+void QuickFunc::EasyReder(programID renderProgram, mat4 projViewMat, GLdata rednerData, float time) {
 	glUseProgram(renderProgram);
 
 	unsigned int projectionViewuniform = glGetUniformLocation(renderProgram, "ProjectionView");
+	unsigned int timeUniform = glGetUniformLocation(renderProgram, "time");
+	unsigned int heigntScaleUniform = glGetUniformLocation(renderProgram, "heightScale");
+
 	glUniformMatrix4fv(projectionViewuniform, 1, false, glm::value_ptr(projViewMat));
+	glUniform1f(timeUniform, time);
+	glUniform1f(heigntScaleUniform, 3);
 
 	glBindVertexArray(rednerData.VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

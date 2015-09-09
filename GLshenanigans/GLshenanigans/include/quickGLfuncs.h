@@ -12,7 +12,7 @@ namespace QuickFunc {
 
 	GLdata GenerateGrid(unsigned int rows, unsigned int cols);
 	programID QuickRenderProg();
-	void EasyReder(programID renderProgram, mat4 projViewMat, GLdata rednerData);
+	void EasyReder(programID renderProgram, mat4 projViewMat, GLdata rednerData, float time);
 }
 
 #endif

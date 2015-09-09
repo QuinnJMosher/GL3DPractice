@@ -101,7 +101,7 @@ void Application::Draw() {
 	/*Planet::Draw(planet);
 	Planet::Draw(moon);*/
 
-	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid);
+	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 
 	//draw
 	//Gizmos::draw(camera.getProjectionView());
