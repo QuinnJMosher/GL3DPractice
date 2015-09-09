@@ -49,6 +49,9 @@ bool Application::Start() {
 
 	lastTime = glfwGetTime();
 
+	renderProg = QuickFunc::QuickRenderProg();
+	grid = QuickFunc::GenerateGrid(10, 10);
+
 	//if all good
 	return true;
 }
@@ -97,6 +100,8 @@ void Application::Draw() {
 
 	Planet::Draw(planet);
 	Planet::Draw(moon);
+
+	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid);
 
 	//draw
 	Gizmos::draw(camera.getProjectionView());

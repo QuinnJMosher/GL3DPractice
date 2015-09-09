@@ -81,12 +81,12 @@ programID QuickFunc::QuickRenderProg() {
 								layout(location=1) in vec4 Colour; \
 								out vec4 vColour; \
 								uniform mat4 ProjectionView; \
-								void main() { vColour = Colour; gl_Position = ProjectionView * Projection; } ";
+								void main() { vColour = Colour; gl_Position = ProjectionView * Position; }";
 
 	const char* fragmentShaderSrc = "#version 410\n \
 									in vec4 vColour; \
 									out vec4 FragColor; \
-									void main() { fragColor = vColour; } ";
+									void main() { FragColor = vColour; } ";
 
 	int success = GL_FALSE;
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -94,7 +94,7 @@ programID QuickFunc::QuickRenderProg() {
 
 	glShaderSource(vertexShader, 1, (const char**)&vertexShaderSrc, 0);
 	glCompileShader(vertexShader);
-	glShaderSource(fragmentShader, 1, (const char**)&vertexShaderSrc, 0);
+	glShaderSource(fragmentShader, 1, (const char**)&fragmentShaderSrc, 0);
 	glCompileShader(fragmentShader);
 
 	programID newProgramID = glCreateProgram();

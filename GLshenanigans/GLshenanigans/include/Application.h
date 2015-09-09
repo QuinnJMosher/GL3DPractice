@@ -2,16 +2,17 @@
 #define _Application_h_
 
 //base includes
-#include <gl_core_4_4.h>
-#include <GLFW\glfw3.h>
+#include "gl_core_4_4.h"
+#include "GLFW\glfw3.h"
 //extention Inculdes
-#include <Gizmos.h>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include "Gizmos.h"
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
 //my classes
-#include <Planet.h>
-#include <Camera.h>
-#include <FlyCamera.h>
+#include "Planet.h"
+#include "Camera.h"
+#include "FlyCamera.h"
+#include "quickGLfuncs.h"
 
 //declare glm types
 using glm::vec3;
@@ -39,6 +40,9 @@ private:
 	Planet planet;
 	Planet moon;
 
+	programID renderProg;
+	GLdata grid;
+
 	//active variables
 	GLFWwindow* window;
 	mat4 view;
@@ -60,7 +64,7 @@ private:
 	const float set_clearScr_b = 0.35f;
 	const float set_clearScr_a = 1;
 	//grid/visuals
-	const bool drawsGrid = true;
+	const bool drawsGrid = false;
 	const bool drawsCentre = false;
 };
 
