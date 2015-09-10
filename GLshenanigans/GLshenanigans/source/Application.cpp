@@ -52,9 +52,7 @@ bool Application::Start() {
 	renderProg = QuickFunc::QuickRenderProg();
 	grid = QuickFunc::GenerateGrid(10, 10);
 
-	Geometry::ReadyShaderProgram();
-	Geometry::SetMainCamera(&camera);
-	loadedItem = Geometry::Load("./GLshenanigans/assets/bunny.obj");
+	geo = QuickFunc::loadGeometry("./assets/dragon.obj");
 
 	//if all good
 	return true;
@@ -105,8 +103,8 @@ void Application::Draw() {
 	/*Planet::Draw(planet);
 	Planet::Draw(moon);*/
 
-	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
-	loadedItem->Render();
+	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
+	QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
 
 	//draw
 	//Gizmos::draw(camera.getProjectionView());

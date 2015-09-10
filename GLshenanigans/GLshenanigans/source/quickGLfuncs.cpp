@@ -95,7 +95,7 @@ programID QuickFunc::QuickRenderProg() {
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(vertexShader, 1, (const char**)&vertexShaderSineWave, 0);
+	glShaderSource(vertexShader, 1, (const char**)&vertexShaderSrc, 0);
 	glCompileShader(vertexShader);
 	glShaderSource(fragmentShader, 1, (const char**)&fragmentShaderSrc, 0);
 	glCompileShader(fragmentShader);
@@ -131,10 +131,86 @@ void QuickFunc::EasyReder(programID renderProgram, mat4 projViewMat, GLdata redn
 	unsigned int heigntScaleUniform = glGetUniformLocation(renderProgram, "heightScale");
 
 	glUniformMatrix4fv(projectionViewuniform, 1, false, glm::value_ptr(projViewMat));
-	glUniform1f(timeUniform, time);
-	glUniform1f(heigntScaleUniform, 0);
+	//glUniform1f(timeUniform, time);
+	//glUniform1f(heigntScaleUniform, 0);
 
 	glBindVertexArray(rednerData.VAO);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, rednerData.indexCount, GL_UNSIGNED_INT, 0);
+}
+
+Geometry* QuickFunc::loadGeometry(std::string in_filename) {
+	Geometry* output = new Geometry();
+	output->shapes = std::vector<tinyobj::shape_t>();
+	output->materials = std::vector<tinyobj::material_t>();
+	output->glInfo = std::vector<GLdata>();
+
+	std::string err = tinyobj::LoadObj(output->shapes, output->materials, in_filename.c_str());
+	printf(err.c_str());
+
+	output->glInfo.resize(output->shapes.size());
+
+	for (unsigned int mesh_index = 0; mesh_index < output->shapes.size(); mesh_index++) {
+		glGenVertexArrays(1, &(output->glInfo[mesh_index].VAO));
+		glGenBuffers(1, &(output->glInfo[mesh_index].VBO));
+		glGenBuffers(1, &(output->glInfo[mesh_index].IBO));
+
+		glBindVertexArray(output->glInfo[mesh_index].VAO);
+
+		unsigned int floatCount = output->shapes[mesh_index].mesh.positions.size();
+		floatCount += output->shapes[mesh_index].mesh.normals.size();
+		floatCount += output->shapes[mesh_index].mesh.texcoords.size();
+
+		std::vector<float> vertexData;
+		vertexData.reserve(floatCount);
+
+		vertexData.insert(vertexData.end(),
+							output->shapes[mesh_index].mesh.positions.begin(),
+							output->shapes[mesh_index].mesh.positions.end());
+
+		vertexData.insert(vertexData.end(),
+							output->shapes[mesh_index].mesh.normals.begin(),
+							output->shapes[mesh_index].mesh.normals.end());
+
+		output->glInfo[mesh_index].indexCount =
+							output->shapes[mesh_index].mesh.indices.size();
+
+		glBindBuffer(GL_ARRAY_BUFFER, output->glInfo[mesh_index].VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, output->glInfo[mesh_index].IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			output->shapes[mesh_index].mesh.indices.size() * sizeof(unsigned int),
+			output->shapes[mesh_index].mesh.indices.data(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0,
+					(void*)(sizeof(float) * output->shapes[mesh_index].mesh.positions.size()));
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	}
+
+	return output;
+}
+
+void QuickFunc::renderGeo(programID renderProgram, mat4 projViewMat, Geometry* in_target) {
+	glUseProgram(renderProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(renderProgram, "ProjectionView");
+
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(projViewMat));
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	for (unsigned int i = 0; i < in_target->glInfo.size(); i++) {
+		glBindVertexArray(in_target->glInfo[i].VAO);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, in_target->glInfo[i].indexCount, GL_UNSIGNED_INT, 0);
+	}
 }

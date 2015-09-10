@@ -13,7 +13,6 @@
 #include "Camera.h"
 #include "FlyCamera.h"
 #include "quickGLfuncs.h"
-#include "OBJHandler.h"
 
 //declare glm types
 using glm::vec3;
@@ -43,12 +42,13 @@ private:
 
 	programID renderProg;
 	GLdata grid;
-	Geometry* loadedItem;
 
 	//active variables
 	GLFWwindow* window;
 	mat4 view;
 	mat4 projection;
+
+	Geometry* geo;
 
 	//time vars
 	float totalTime;
