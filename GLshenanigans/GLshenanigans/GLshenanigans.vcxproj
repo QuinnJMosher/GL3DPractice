@@ -138,7 +138,6 @@
     <ClInclude Include="include\Gizmos.h" />
     <ClInclude Include="include\GLstructs.h" />
     <ClInclude Include="include\gl_core_4_4.h" />
-    <ClInclude Include="include\OBJHandler.h" />
     <ClInclude Include="include\Planet.h" />
     <ClInclude Include="include\quickGLfuncs.h" />
     <ClInclude Include="include\tiny_obj_loader.h" />
@@ -150,7 +149,6 @@
     <ClCompile Include="source\Gizmos.cpp" />
     <ClCompile Include="source\gl_core_4_4.c" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\OBJHandeler.cpp" />
     <ClCompile Include="source\Planet.cpp" />
     <ClCompile Include="source\quickGLfuncs.cpp" />
     <ClCompile Include="source\tiny_obj_loader.cc" />

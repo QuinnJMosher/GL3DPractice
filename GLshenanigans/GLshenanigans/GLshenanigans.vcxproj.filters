@@ -39,9 +39,6 @@
     <ClInclude Include="include\quickGLfuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\OBJHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\tiny_obj_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,9 +66,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\quickGLfuncs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\OBJHandeler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\tiny_obj_loader.cc">
