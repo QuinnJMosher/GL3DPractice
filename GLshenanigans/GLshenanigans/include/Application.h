@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "FlyCamera.h"
 #include "quickGLfuncs.h"
+#include "OBJHandler.h"
 
 //declare glm types
 using glm::vec3;
@@ -42,6 +43,7 @@ private:
 
 	programID renderProg;
 	GLdata grid;
+	Geometry* loadedItem;
 
 	//active variables
 	GLFWwindow* window;

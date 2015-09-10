@@ -61,6 +61,8 @@ Geometry* Geometry::Load(const string in_filename) {
 		return nullptr;
 	}
 
+	newInstance->createGLBuffers();
+
 	return newInstance;
 
 }

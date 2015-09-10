@@ -141,6 +141,7 @@
     <ClInclude Include="include\OBJHandler.h" />
     <ClInclude Include="include\Planet.h" />
     <ClInclude Include="include\quickGLfuncs.h" />
+    <ClInclude Include="include\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Application.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="source\OBJHandeler.cpp" />
     <ClCompile Include="source\Planet.cpp" />
     <ClCompile Include="source\quickGLfuncs.cpp" />
+    <ClCompile Include="source\tiny_obj_loader.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
