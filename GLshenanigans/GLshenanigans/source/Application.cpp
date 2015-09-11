@@ -49,10 +49,13 @@ bool Application::Start() {
 
 	lastTime = glfwGetTime();
 
-	renderProg = QuickFunc::QuickRenderProg();
-	grid = QuickFunc::GenerateGrid(10, 10);
+	//renderProg = QuickFunc::QuickRenderProg();
+	renderProg = QuickFunc::QuickTextProg();
+	//grid = QuickFunc::GenerateGrid(10, 10);
+	grid = QuickFunc::createDumbBox();
 
-	geo = QuickFunc::loadGeometry("./assets/dragon.obj");
+	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
+	tex = QuickFunc::LoadTexture("./assets/crate.png");
 
 	//if all good
 	return true;
@@ -104,7 +107,8 @@ void Application::Draw() {
 	Planet::Draw(moon);*/
 
 	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
-	QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
+	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
+	QuickFunc::renderTex(renderProg, camera.getProjectionView(), grid, tex);
 
 	//draw
 	//Gizmos::draw(camera.getProjectionView());

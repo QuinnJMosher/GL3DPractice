@@ -4,6 +4,7 @@
 #include "GLstructs.h"
 #include "gl_core_4_4.h"
 #include "tiny_obj_loader.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,8 +23,16 @@ namespace QuickFunc {
 	GLdata GenerateGrid(unsigned int rows, unsigned int cols);
 	programID QuickRenderProg();
 	void EasyReder(programID renderProgram, mat4 projViewMat, GLdata rednerData, float time);
+
 	Geometry* loadGeometry(std::string in_filename);
 	void renderGeo(programID renderProgram, mat4 projViewMat, Geometry* in_target);
+
+	GLdata createDumbBox();
+
+	programID QuickTextProg();
+
+	Texture* LoadTexture(std::string in_fileName);
+	void renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture);
 }
 
 #endif

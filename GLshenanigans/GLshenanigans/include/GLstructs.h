@@ -11,12 +11,25 @@ struct Vertex
 	vec4 color;
 };
 
+struct VertexUV
+{
+	vec4 position;
+	glm::vec2 uv;
+};
+
 //RenderObject
 struct GLdata {
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int IBO;
 	unsigned int indexCount;
+};
+
+struct Texture {
+	int imageWidth;
+	int imageHeight;
+	int imageFormat;
+	unsigned int textureID;
 };
 
 #endif

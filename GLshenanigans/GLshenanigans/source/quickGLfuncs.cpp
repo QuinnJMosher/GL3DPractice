@@ -1,4 +1,8 @@
 #include "quickGLfuncs.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb\stb_image.h"
+
+
 
 GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 
@@ -213,4 +217,132 @@ void QuickFunc::renderGeo(programID renderProgram, mat4 projViewMat, Geometry* i
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, in_target->glInfo[i].indexCount, GL_UNSIGNED_INT, 0);
 	}
+
+}
+
+GLdata QuickFunc::createDumbBox() {
+	float vertexData[] = {
+		-5, 0, 5, 1, 0, 1,
+		5, 0, 5, 1, 1, 1,
+		5, 0, -5, 1, 1, 0,
+		-5, 0, -5, 1, 0, 0,
+	};
+
+	unsigned int indexData[] = {
+		0, 1, 2,
+		0, 2, 3,
+	};
+
+	GLdata newData;
+	newData.indexCount = 6;
+
+	glGenVertexArrays(1, &newData.VAO);
+	glGenBuffers(1, &newData.VBO);
+	glGenBuffers(1, &newData.IBO);
+
+	glBindVertexArray(newData.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, newData.VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newData.IBO);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, vertexData, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indexData, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+	
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, ((char*)0) + 16);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return newData;
+}
+
+programID QuickFunc::QuickTextProg() {
+	const char* vertexSource = "#version 410\n \
+								layout(location=0) in vec4 Position; \
+								layout(location=1) in vec2 TexCoord; \
+								out vec2 vTexCoord; \
+								uniform mat4 ProjectionView; \
+								void main() { \
+								vTexCoord = TexCoord; \
+								gl_Position= ProjectionView * Position; \
+								}";
+	const char* fragmentSource = "#version 410\n \
+								in vec2 vTexCoord; \
+								out vec4 FragColor; \
+								uniform sampler2D diffuse; \
+								void main() { \
+								FragColor = texture(diffuse,vTexCoord); \
+								}";
+
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, (const char**)&vertexSource, 0);
+	glCompileShader(vertexShader);
+
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, (const char**)&fragmentSource, 0);
+	glCompileShader(fragmentShader);
+
+	programID newProgram = glCreateProgram();
+	glAttachShader(newProgram, vertexShader);
+	glAttachShader(newProgram, fragmentShader);
+	glLinkProgram(newProgram);
+
+	int success = GL_FALSE;
+	glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
+	glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
+	if (success == GL_FALSE) {
+		int infoLogLength = 0;
+		glGetProgramiv(newProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* infoLog = new char[infoLogLength];
+
+		glGetProgramInfoLog(newProgram, infoLogLength, 0, infoLog);
+		printf("Error: failed to link shader program!\n");
+		printf("%s\n", infoLog);
+		delete[] infoLog;
+	}
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	return newProgram;
+}
+
+Texture* QuickFunc::LoadTexture(std::string in_fileName) {
+	Texture* output = new Texture();
+
+	unsigned char* data = stbi_load(in_fileName.c_str(), &(output->imageWidth), &(output->imageHeight), &(output->imageFormat), STBI_default);
+	
+	glGenTextures(1, &(output->textureID));
+	glBindTexture(GL_TEXTURE_2D, output->textureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, output->imageWidth, output->imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	stbi_image_free(data);
+
+	return output;
+
+}
+
+void QuickFunc::renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture) {
+	glUseProgram(renderProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(renderProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(projViewMat));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
+
+	unsigned int loc = glGetUniformLocation(renderProgram, "diffuse");
+	glUniform1i(loc, 0);
+
+	glBindVertexArray(in_target.VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }

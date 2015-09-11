@@ -49,6 +49,7 @@ private:
 	mat4 projection;
 
 	Geometry* geo;
+	Texture* tex;
 
 	//time vars
 	float totalTime;
