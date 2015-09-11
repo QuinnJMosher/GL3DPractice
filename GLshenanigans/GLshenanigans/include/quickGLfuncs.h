@@ -14,7 +14,7 @@ typedef unsigned int programID;
 
 struct Geometry {
 	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
+	std::vector<tinyobj::material_t> materials; // hotdog
 	std::vector<GLdata> glInfo;
 };
 
@@ -33,6 +33,8 @@ namespace QuickFunc {
 
 	Texture* LoadTexture(std::string in_fileName);
 	void renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture);
+
+	GLdata LoadFBX(std::string in_filename);
 }
 
 #endif

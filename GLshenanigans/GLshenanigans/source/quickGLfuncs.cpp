@@ -1,6 +1,7 @@
 #include "quickGLfuncs.h"
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb\stb_image.h"
+#include "FBXFile.h"
 
 
 
@@ -58,7 +59,7 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 	glEnableVertexAttribArray(1);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));//may have to change size
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -345,4 +346,52 @@ void QuickFunc::renderTex(programID renderProgram, mat4 projViewMat, GLdata in_t
 
 	glBindVertexArray(in_target.VAO);
 	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+GLdata QuickFunc::LoadFBX(std::string in_filename) {
+	//get vertex data
+	FBXFile fbxFile;
+	fbxFile.initialiseOpenGLTextures();
+	fbxFile.load(in_filename.c_str());
+
+	FBXMeshNode* modelData = fbxFile.getMeshByIndex(0);
+	VertexUV* vertexData = new VertexUV[modelData->m_vertices.size()];
+
+	for (int i = 0; i < modelData->m_vertices.size(); i++) {
+		VertexUV newVertex;
+		newVertex.position = modelData->m_vertices[i].position;
+		newVertex.uv = modelData->m_vertices[i].texCoord1;
+		vertexData[i] = newVertex;
+	}
+
+	//create gldata
+	GLdata output;
+	output.indexCount = modelData->m_indices.size();
+
+	glGenVertexArrays(1, &output.VAO);
+	glGenBuffers(1, &output.VBO);
+	glGenBuffers(1, &output.IBO);
+
+	glBindVertexArray(output.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, output.VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, output.IBO);
+
+	glBufferData(GL_ARRAY_BUFFER, modelData->m_vertices.size() * sizeof(VertexUV), vertexData, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, output.indexCount * sizeof(unsigned int), modelData->m_indices.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	//destroy stuff
+	delete[] vertexData;
+	fbxFile.unload();
+
+	return output;
 }
