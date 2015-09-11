@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)/include</IncludePath>
-    <LibraryPath>$(ProjectDir)/libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)/libs;$(LibraryPath);$(ProjectDir)/libs</LibraryPath>
     <SourcePath>$(VC_SourcePath);$(ProjectDir)/source</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -136,8 +136,11 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\FlyCamera.h" />
     <ClInclude Include="include\Gizmos.h" />
+    <ClInclude Include="include\GLstructs.h" />
     <ClInclude Include="include\gl_core_4_4.h" />
     <ClInclude Include="include\Planet.h" />
+    <ClInclude Include="include\quickGLfuncs.h" />
+    <ClInclude Include="include\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Application.cpp" />
@@ -147,6 +150,8 @@
     <ClCompile Include="source\gl_core_4_4.c" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Planet.cpp" />
+    <ClCompile Include="source\quickGLfuncs.cpp" />
+    <ClCompile Include="source\tiny_obj_loader.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
