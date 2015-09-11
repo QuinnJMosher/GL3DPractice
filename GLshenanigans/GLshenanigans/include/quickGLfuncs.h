@@ -35,6 +35,7 @@ namespace QuickFunc {
 	void renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture);
 
 	GLdata LoadFBX(std::string in_filename);
+	Texture* LoadFBXTexture(std::string in_filename);
 }
 
 #endif

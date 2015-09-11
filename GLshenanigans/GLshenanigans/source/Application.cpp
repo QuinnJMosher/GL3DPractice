@@ -48,10 +48,11 @@ bool Application::Start() {
 
 	renderProg = QuickFunc::QuickTextProg();
 	//grid = QuickFunc::GenerateGrid(10, 10);
-	grid = QuickFunc::LoadFBX("./assets/stanford/bunny.fbx");
+	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
-	tex = QuickFunc::LoadTexture("./assets/crate.png");
+	//tex = QuickFunc::LoadTexture("./assets/crate.png");
+	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx");
 
 	//if all good
 	return true;
@@ -98,9 +99,9 @@ void Application::Draw() {
 		DrawCentre();
 	}
 
-	QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
+	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
-	//QuickFunc::renderTex(renderProg, camera.getProjectionView(), grid, tex);
+	QuickFunc::renderTex(renderProg, camera.getProjectionView(), grid, tex);
 
 	//draw
 	Gizmos::draw(camera.getProjectionView());

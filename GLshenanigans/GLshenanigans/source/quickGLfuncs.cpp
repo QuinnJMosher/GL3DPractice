@@ -395,3 +395,32 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 
 	return output;
 }
+
+Texture* QuickFunc::LoadFBXTexture(std::string in_filename) {
+	FBXFile fbxFile;
+	fbxFile.initialiseOpenGLTextures();
+	fbxFile.load(in_filename.c_str());
+
+	FBXTexture* derp = fbxFile.getTextureByIndex(0);
+
+	Texture* output = new Texture();
+
+	output->imageWidth = derp->width;
+	output->imageHeight = derp->height;
+	output->imageFormat = derp->format;
+
+	unsigned char* data = derp->data;
+
+	glGenTextures(1, &(output->textureID));
+	glBindTexture(GL_TEXTURE_2D, output->textureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, output->imageWidth, output->imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	fbxFile.unload();
+
+	return output;
+}
