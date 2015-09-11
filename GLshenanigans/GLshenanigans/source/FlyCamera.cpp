@@ -4,7 +4,7 @@ void FlyCamera::update(float in_deltaTime) {
 	//get directional input
 	float input_RL = 0;//right is positive
 	float input_UD = 0;//up is positive
-	if (glfwGetKey(inputContext, GLFW_KEY_W) == GLFW_PRESS) {
+	/*if (glfwGetKey(inputContext, GLFW_KEY_W) == GLFW_PRESS) {
 		input_UD += (speed * in_deltaTime);
 	}
 	if (glfwGetKey(inputContext, GLFW_KEY_S) == GLFW_PRESS) {
@@ -15,15 +15,28 @@ void FlyCamera::update(float in_deltaTime) {
 	}
 	if (glfwGetKey(inputContext, GLFW_KEY_D) == GLFW_PRESS) {
 		input_RL += (speed * in_deltaTime);
+	}*/
+	if (Input::IsKey(KeyCode::W, KeyState::Down)) {
+		input_UD += (speed * in_deltaTime);
 	}
-
+	if (Input::IsKey(KeyCode::S, KeyState::Down)) {
+		input_UD -= (speed * in_deltaTime);
+	}
+	if (Input::IsKey(KeyCode::A, KeyState::Down)) {
+		input_RL -= (speed * in_deltaTime);
+	}
+	if (Input::IsKey(KeyCode::D, KeyState::Down)) {
+		input_RL += (speed * in_deltaTime);
+	}
 	
 	//get rotational input
 	//get mouse pos
-	double curMouseX, curMouseY;
+	/*double curMouseX, curMouseY;
 	glfwGetCursorPos(inputContext, &curMouseX, &curMouseY);
 	vec2 deltaMouse = vec2(curMouseX - lastMousePos.x, curMouseY - lastMousePos.y);
-	lastMousePos = vec2(curMouseX, curMouseY);
+	lastMousePos = vec2(curMouseX, curMouseY);*/
+
+	vec2 deltaMouse = Input::GetMouseDelta();
 
 	///keyboard controls
 	//float input_rotate_UD = 0;//up is positive

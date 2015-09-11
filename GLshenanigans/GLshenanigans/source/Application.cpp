@@ -28,11 +28,11 @@ bool Application::Start() {
 	//ready Gizmos
 	Gizmos::create();
 
-
+	Input::Init(window);
 	
 	//fly cam only
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	camera.inputContext = window;
+	//camera.inputContext = window;
 	camera.setSpeed(10.0f);
 	camera.rotateSensitivity = 0.5f;
 	//all camera
@@ -71,6 +71,8 @@ bool Application::Update()
 	deltaTime = totalTime - lastTime;
 
 	camera.update(deltaTime);
+
+	Input::Update();
 
 	lastTime = totalTime;
 	return true;

@@ -3,8 +3,9 @@
 
 #include <Camera.h>//parent
 
-//glfw for input 'cause i'm lazy
-#include <GLFW\glfw3.h>
+////glfw for input 'cause i'm lazy
+//#include <GLFW\glfw3.h>
+#include "Input.h"
 using glm::vec2;
 
 class FlyCamera : public Camera
@@ -14,7 +15,7 @@ public:
 	void setSpeed(float in_speed);
 	virtual void setLookAt(vec3 in_from, vec3 in_to, vec3 in_up);
 
-	GLFWwindow* inputContext;
+	//GLFWwindow* inputContext;
 	float rotateSensitivity;
 private:
 	float speed;

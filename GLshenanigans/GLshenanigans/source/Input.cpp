@@ -1,6 +1,13 @@
 #include <Input.h>
 #include <GLFW\glfw3.h>
 
+vec2 Input::lastMousePos = vec2(0, 0);
+vec2 Input::curMousePos = vec2(0, 0);
+vec2 Input::deltaMousePos = vec2(0, 0);
+KeyState Input::curMouseStates[8];
+KeyState Input::curKeyStates[348];
+GLFWwindow* Input::context = nullptr;
+
 void Input::Init(GLFWwindow* in_context) {
 	context = in_context;
 }
@@ -8,7 +15,7 @@ void Input::Init(GLFWwindow* in_context) {
 void Input::Update() {
 
 	//take and handle keystates for keys
-	for (int i = 0; i < KeyCode::KEY_LAST; i++) {
+	for (int i = 0; i < KeyCode::KB_LAST; i++) {
 		//get keyState
 		bool isCurrentDown = (glfwGetKey(context, i) == GLFW_PRESS);
 		if (isCurrentDown) {
@@ -33,7 +40,7 @@ void Input::Update() {
 	}
 
 	//take and handle keystates for buttons
-	for (int i = 0; i < MouseButtonCode::MOUSE_BUTTON_LAST; i++) {
+	for (int i = 0; i < MouseButtonCode::MO_LAST; i++) {
 		bool isCurrentDown = (glfwGetKey(context, i) == GLFW_PRESS);
 		if (isCurrentDown) {
 			if (curMouseStates[i] == KeyState::Up || curMouseStates[i] == KeyState::Released) {
@@ -60,7 +67,7 @@ void Input::Update() {
 	glfwGetCursorPos(context, &curMouseX, &curMouseY);
 	curMousePos.x = curMouseX;
 	curMousePos.y = curMouseY;
-	vec2 deltaMouse = vec2(curMouseX - lastMousePos.x, curMouseY - lastMousePos.y);
+	deltaMousePos = vec2(curMouseX - lastMousePos.x, curMouseY - lastMousePos.y);
 }
 
 //key stuff

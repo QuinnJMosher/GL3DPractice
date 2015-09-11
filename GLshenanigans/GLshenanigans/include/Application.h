@@ -9,6 +9,7 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 //my classes
+#include "Input.h"
 #include "Camera.h"
 #include "FlyCamera.h"
 #include "quickGLfuncs.h"
