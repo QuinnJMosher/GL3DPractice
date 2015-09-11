@@ -8,7 +8,7 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 
 	//generate positions
 	GLdata dataOut;
-	Vertex* aoVertices = new Vertex[rows * cols];
+	VertexUV* aoVertices = new VertexUV[rows * cols];
 	unsigned int* auiIndices = new unsigned int[(rows - 1) * (cols - 1) * 6];
 
 	for (unsigned int r = 0; r < rows; r++) {
@@ -16,8 +16,10 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 			aoVertices[r * cols + c].position = vec4(
 													(float)c, 0, (float)r, 1);
 
-			glm::vec3 color = glm::vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
-			aoVertices[r * cols + c].color = vec4(color, 1);
+			//glm::vec3 color = glm::vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
+			//aoVertices[r * cols + c].color = vec4(color, 1);
+			aoVertices[r * cols + c].uv = glm::vec2(1 - (float)r / (rows - 1),
+													(float)c / (cols - 1));
 		}
 	}
 
@@ -49,14 +51,14 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 	glBindBuffer(GL_ARRAY_BUFFER, dataOut.VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dataOut.IBO);
 	
-	glBufferData(GL_ARRAY_BUFFER, (rows * cols) * sizeof(Vertex), aoVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (rows * cols) * sizeof(VertexUV), aoVertices, GL_STATIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataOut.indexCount * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(vec4)));
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));//may have to change size
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -344,5 +346,5 @@ void QuickFunc::renderTex(programID renderProgram, mat4 projViewMat, GLdata in_t
 	glUniform1i(loc, 0);
 
 	glBindVertexArray(in_target.VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
 }

@@ -68,7 +68,7 @@ private:
 	const float set_clearScr_a = 1;
 	//grid/visuals
 	const bool drawsGrid = false;
-	const bool drawsCentre = false;
+	const bool drawsCentre = true;
 };
 
 #endif

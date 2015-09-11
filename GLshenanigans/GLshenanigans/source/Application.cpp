@@ -51,8 +51,8 @@ bool Application::Start() {
 
 	//renderProg = QuickFunc::QuickRenderProg();
 	renderProg = QuickFunc::QuickTextProg();
-	//grid = QuickFunc::GenerateGrid(10, 10);
-	grid = QuickFunc::createDumbBox();
+	grid = QuickFunc::GenerateGrid(3, 3);
+	//grid = QuickFunc::createDumbBox();
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
 	tex = QuickFunc::LoadTexture("./assets/crate.png");
@@ -111,7 +111,7 @@ void Application::Draw() {
 	QuickFunc::renderTex(renderProg, camera.getProjectionView(), grid, tex);
 
 	//draw
-	//Gizmos::draw(camera.getProjectionView());
+	Gizmos::draw(camera.getProjectionView());
 	
 	//glfw update
 	glfwSwapBuffers(window);
