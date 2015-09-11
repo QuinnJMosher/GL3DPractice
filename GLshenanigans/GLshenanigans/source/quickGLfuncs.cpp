@@ -212,11 +212,10 @@ void QuickFunc::renderGeo(programID renderProgram, mat4 projViewMat, Geometry* i
 
 	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(projViewMat));
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	for (unsigned int i = 0; i < in_target->glInfo.size(); i++) {
 		glBindVertexArray(in_target->glInfo[i].VAO);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, in_target->glInfo[i].indexCount, GL_UNSIGNED_INT, 0);
 	}
 
@@ -279,7 +278,6 @@ programID QuickFunc::QuickTextProg() {
 								void main() { \
 								FragColor = texture(diffuse,vTexCoord); \
 								}";
-
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, (const char**)&vertexSource, 0);
 	glCompileShader(vertexShader);

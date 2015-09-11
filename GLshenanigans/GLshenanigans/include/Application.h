@@ -9,7 +9,6 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 //my classes
-#include "Planet.h"
 #include "Camera.h"
 #include "FlyCamera.h"
 #include "quickGLfuncs.h"
@@ -37,8 +36,6 @@ private:
 
 	//logic vars
 	FlyCamera camera;
-	Planet planet;
-	Planet moon;
 
 	programID renderProg;
 	GLdata grid;

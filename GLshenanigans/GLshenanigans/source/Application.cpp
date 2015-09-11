@@ -29,11 +29,12 @@ bool Application::Start() {
 	Gizmos::create();
 
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	
 	//fly cam only
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	camera.inputContext = window;
 	camera.setSpeed(10.0f);
-	camera.rotateSensitivity = 1.0f;
+	camera.rotateSensitivity = 0.5f;
 	//all camera
 	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
@@ -41,18 +42,10 @@ bool Application::Start() {
 	//settings
 	glClearColor(set_clearScr_r, set_clearScr_g, set_clearScr_b, set_clearScr_a);
 
-	//ready planets
-	//planet = Planet(vec3(0, 0, 0), 1);
-	//moon = Planet(vec3(2, 0, 0), 0.11f);
-	//moon.orbit = 3;
-	//moon.parent = &planet;
-
 	lastTime = glfwGetTime();
 
-	//renderProg = QuickFunc::QuickRenderProg();
 	renderProg = QuickFunc::QuickTextProg();
-	grid = QuickFunc::GenerateGrid(3, 3);
-	//grid = QuickFunc::createDumbBox();
+	grid = QuickFunc::GenerateGrid(10, 10);
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
 	tex = QuickFunc::LoadTexture("./assets/crate.png");
@@ -79,9 +72,6 @@ bool Application::Update()
 
 	camera.update(deltaTime);
 
-	planet.update(glfwGetTime());
-	moon.update(glfwGetTime());
-
 	lastTime = totalTime;
 	return true;
 }
@@ -102,9 +92,6 @@ void Application::Draw() {
 	if (drawsCentre) {
 		DrawCentre();
 	}
-
-	/*Planet::Draw(planet);
-	Planet::Draw(moon);*/
 
 	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
