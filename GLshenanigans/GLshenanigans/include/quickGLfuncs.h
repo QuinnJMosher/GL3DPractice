@@ -6,6 +6,7 @@
 #include "tiny_obj_loader.h"
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -14,7 +15,7 @@ typedef unsigned int programID;
 
 struct Geometry {
 	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials; // hotdog
+	std::vector<tinyobj::material_t> materials;
 	std::vector<GLdata> glInfo;
 };
 
@@ -36,6 +37,9 @@ namespace QuickFunc {
 
 	GLdata LoadFBX(std::string in_filename);
 	Texture* LoadFBXTexture(std::string in_filename);
+
+	unsigned int loadShader(unsigned int type, const char* fileName);
+	programID makeProgram(const char* vertexShFileName, const char* fragmentShFileName);
 }
 
 #endif

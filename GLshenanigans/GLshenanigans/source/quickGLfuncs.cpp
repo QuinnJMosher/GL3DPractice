@@ -421,6 +421,48 @@ Texture* QuickFunc::LoadFBXTexture(std::string in_filename) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	fbxFile.unload();
-
+	
 	return output;
+}
+
+unsigned int QuickFunc::loadShader(unsigned int type, const char* fileName) {
+
+	std::ifstream in(fileName);
+	std::string contents((std::istreambuf_iterator<char>(in)),
+						std::istreambuf_iterator<char>());
+	char* src = new char[contents.length()];
+	strncpy(src, contents.c_str(), contents.length() + 1);
+
+	unsigned int shader = glCreateShader(type);
+
+	glShaderSource(shader, 1, &src, 0);
+
+	glCompileShader(shader);
+	delete[] src;
+
+	return shader;
+}
+
+programID QuickFunc::makeProgram(const char* vertexShFileName, const char* fragmentShFileName) {
+
+	programID program = glCreateProgram();
+	unsigned int vshader = loadShader(GL_VERTEX_SHADER, vertexShFileName);
+	unsigned int fshader = loadShader(GL_FRAGMENT_SHADER, fragmentShFileName);
+	int success;
+
+	glAttachShader(program, vshader);
+	glAttachShader(program, fshader);
+
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (success = GL_FALSE) {
+		int infoLogLength = 0;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* infoLog = new char[infoLogLength];
+		glGetProgramInfoLog(program, infoLogLength, 0, infoLog);
+		printf("Error: Failed to link shader program!\n");
+		printf("%s\n", infoLog);
+		delete[] infoLog;
+	}
+
+	return program;
 }
