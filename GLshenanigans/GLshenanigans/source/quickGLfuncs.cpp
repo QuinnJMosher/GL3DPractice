@@ -430,8 +430,9 @@ unsigned int QuickFunc::loadShader(unsigned int type, const char* fileName) {
 	std::ifstream in(fileName);
 	std::string contents((std::istreambuf_iterator<char>(in)),
 						std::istreambuf_iterator<char>());
-	char* src = new char[contents.length()];
-	strncpy(src, contents.c_str(), contents.length() + 1);
+	char* src = new char[contents.length() + 1];
+	//strncpy(src, contents.c_str(), contents.length() + 1);
+	strncpy_s(src, contents.length() * sizeof(char), contents.c_str(), contents.length() + 1);
 
 	unsigned int shader = glCreateShader(type);
 
