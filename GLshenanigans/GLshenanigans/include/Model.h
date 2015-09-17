@@ -1,9 +1,10 @@
 #ifndef _Model_h_
 #define _Model_h_
 
-class string;
+#include "glm\glm.hpp"
+#include <string>
+
 class vec4;
-class mat4;
 class FBXFile;
 struct GLdata;
 struct Texture;
@@ -20,13 +21,13 @@ public:
 	static void Startup();
 	static void Shutdown();
 
-	static Model* LoadOBJ(string in_fileName);
-	static Model* LoadFBX(string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1);
+	static Model* LoadOBJ(std::string in_fileName);
+	static Model* LoadFBX(std::string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1);
 	static void DeleteFile(Model* in_target);
 	
-	void LoadTexture(string in_fileName, int in_FBXIndex = -1);
+	void LoadTexture(std::string in_fileName, int in_FBXIndex = -1);
 	void GiveProgram(unsigned int in_programID);
-	void GiveProgram(string in_VertexShaderFile, string in_fragShaderFile);
+	void GiveProgram(std::string in_VertexShaderFile, std::string in_fragShaderFile);
 
 	//position
 	void SetPostion(float in_x, float in_y, float in_z);
@@ -35,7 +36,10 @@ public:
 	void SetRotation(float in_x, float in_y, float in_z);
 	void Rotate(float in_x, float in_y, float in_z);
 
-	mat4* getTransoform();
+	glm::mat4* GetTransoform();
+	GLdata* GetGLdata();
+	Texture* GetTexture();
+	unsigned int GetProgram();
 
 private:
 	Model();
@@ -47,16 +51,16 @@ private:
 	unsigned int personalProgram;
 
 	GLdata* renderObject;
-	string* fileName;
+	std::string* fileName;
 	Mod_FileType fType;
 	Texture* currentTexture;
-	string* textureName;
+	std::string* textureName;
 
 	vec4* position;
 	vec4* rotation;
 
 	bool matIsDirty;
-	mat4* transform;
+	glm::mat4* transform;
 };
 
 #endif

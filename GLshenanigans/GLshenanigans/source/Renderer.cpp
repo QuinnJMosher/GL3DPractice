@@ -1,17 +1,62 @@
 #include "Renderer.h"//header
 //addit
 //#include "GLFW\glfw3.h"
-#include <string>
-using std::string;
+#include <iostream>
+#include <fstream>
 #include "gl_core_4_4.h"
 #include "GLstructs.h"
 #include "FBXFile.h"
 #include "stb\stb_image.h"
+#include "glm\mat4x4.hpp"
 
-void Renderer::Drawing::DrModel(Model* in_target);
-void Renderer::Drawing::DrModelWireframe(Model* in_target);
-void Renderer::Drawing::DrGLdata(GLdata* in_target);
-void Renderer::Drawing::DrGldataWithTex(GLdata* in_target, Texture* in_texture);
+void Renderer::Drawing::DrModel(Model* in_target, glm::mat4 in_projViewMat) {
+	glUseProgram(in_target->GetProgram());
+
+	unsigned int projectViewUniform = glGetUniformLocation(in_target->GetProgram(), "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_projViewMat));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_target->GetTexture()->textureID);
+
+	unsigned int loc = glGetUniformLocation(in_target->GetProgram(), "diffuse");
+	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(in_target->GetProgram(), "TransformMat");
+	glm::mat4* transform = in_target->GetTransoform();
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, (float*)transform);
+
+	glBindVertexArray(in_target->GetGLdata()->VAO);
+	glDrawElements(GL_TRIANGLES, in_target->GetGLdata()->indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void Renderer::Drawing::DrGLdata(GLdata* in_target, glm::mat4 in_projViewMat) {
+	glUseProgram(Renderer::Memory::DefaultProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(Renderer::Memory::DefaultProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_projViewMat));
+
+	unsigned int loc = glGetUniformLocation(Renderer::Memory::DefaultProgram, "diffuse");
+	glUniform1i(loc, 0);
+
+	glBindVertexArray(in_target->VAO);
+	glDrawElements(GL_TRIANGLES, in_target->indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void Renderer::Drawing::DrGldataWithTex(GLdata* in_target, Texture* in_texture, glm::mat4 in_projViewMat) {
+	glUseProgram(Renderer::Memory::DefaultProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(Renderer::Memory::DefaultProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_projViewMat));
+
+	unsigned int loc = glGetUniformLocation(Renderer::Memory::DefaultProgram, "diffuse");
+	glUniform1i(loc, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
+
+	glBindVertexArray(in_target->VAO);
+	glDrawElements(GL_TRIANGLES, in_target->indexCount, GL_UNSIGNED_INT, nullptr);
+}
 
 unsigned int Renderer::Memory::DefaultProgram = 0;
 
@@ -57,7 +102,7 @@ GLdata* Renderer::Memory::CreateGLdata(FBXVertex* in_verticies, unsigned int in_
 	return output;
 }
 
-Texture* Renderer::Memory::CreateTextData(string in_filename) {
+Texture* Renderer::Memory::CreateTextData(std::string in_filename) {
 	int width, height, format;
 	unsigned char* data = stbi_load(in_filename.c_str, &width, &height, &format, STBI_default);
 
@@ -87,6 +132,9 @@ Texture* Renderer::Memory::CreateTexture(unsigned char* in_data, int in_imgWidth
 }
 
 unsigned int Renderer::Memory::CreateDefaultProgram() {
+	if (DefaultProgram != 0) {
+		return DefaultProgram;
+	}
 	const char* vertexSource = "#version 410\n \
 								layout(location=0) in vec4 Position; \
 								layout(location=1) in vec4 Color; \
@@ -140,11 +188,64 @@ unsigned int Renderer::Memory::CreateDefaultProgram() {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	DefaultProgram = newProgram;
 	return newProgram;
 }
 
-unsigned int Renderer::Memory::CreateProgram(const char* in_vertexShaderFile, const char* in_fragmentShaderFile);
+unsigned int Renderer::Memory::CreateProgram(const char* in_vertexShaderFile, const char* in_fragmentShaderFile) {
+	unsigned int program = glCreateProgram();
+	unsigned int vshader = Renderer::Memory::CreateShader(GL_VERTEX_SHADER, in_vertexShaderFile);
+	unsigned int fshader = Renderer::Memory::CreateShader(GL_FRAGMENT_SHADER, in_fragmentShaderFile);
+	int success;
 
-void Renderer::Memory::DeleteGLdata(GLdata* in_target);
-void Renderer::Memory::DeleteTexture(Texture* in_target);
-void Renderer::Memory::DeleteProgram(unsigned int in_target);
+	glAttachShader(program, vshader);
+	glAttachShader(program, fshader);
+
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (success = GL_FALSE) {
+		int infoLogLength = 0;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* infoLog = new char[infoLogLength];
+		glGetProgramInfoLog(program, infoLogLength, 0, infoLog);
+		printf("Error: Failed to link shader program!\n");
+		printf("%s\n", infoLog);
+		delete[] infoLog;
+	}
+
+	return program;
+}
+
+unsigned int Renderer::Memory::CreateShader(unsigned int in_type, const char* in_filepath) {
+	std::ifstream in(in_filepath);
+	std::string contents((std::istreambuf_iterator<char>(in)),
+							std::istreambuf_iterator<char>());
+	char* src = new char[contents.length() + 1];
+	//strncpy(src, contents.c_str(), contents.length() + 1);
+	strncpy_s(src, contents.length() * sizeof(char), contents.c_str(), contents.length() + 1);
+
+	unsigned int shader = glCreateShader(in_type);
+
+	glShaderSource(shader, 1, &src, 0);
+
+	glCompileShader(shader);
+	delete[] src;
+
+	return shader;
+}
+
+void Renderer::Memory::DeleteGLdata(GLdata* in_target)
+{
+	glDeleteVertexArrays(1, &in_target->VAO);
+	glDeleteBuffers(1, &in_target->VBO);
+	glDeleteBuffers(1, &in_target->IBO);
+	delete in_target;
+}
+
+void Renderer::Memory::DeleteTexture(Texture* in_target) {
+	glDeleteTextures(1, &in_target->textureID);
+	delete in_target;
+}
+
+void Renderer::Memory::DeleteProgram(unsigned int in_target) {
+	glDeleteProgram(in_target);
+}

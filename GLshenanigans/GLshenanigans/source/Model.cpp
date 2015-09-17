@@ -1,16 +1,18 @@
 #include "Model.h"//header
 //addit
+#include "Renderer.h"
 #include <iostream>
-#include <string>
-using std::string;
-#include "glm\glm.hpp"
+#include <vector>
+//using std::string;
 #include "glm\ext.hpp"
-using glm::vec4;
-using glm::mat4;
+//using glm::vec4;
+//using glm::mat4;
 #include "FBXFile.h"
 #include "stb\stb_image.h"
 #include "tiny_obj_loader.h"
 #include "GLstructs.h"
+
+using namespace Renderer;
 
 FBXFile* Model::FBXInstance = nullptr;
 unsigned int Model::defaultProgram = 0;
@@ -22,23 +24,24 @@ Model::Model() {
 	}
 
 	renderObject = new GLdata();
-	fileName = new string("");
+	fileName = new std::string("");
 	fType = Mod_FileType::Mod_None;
 	currentTexture = nullptr;
-	textureName = new string("");
+	textureName = new std::string("");
 
 	position = new vec4(0, 0, 0, 1);
 	rotation = new vec4(0, 0, 0, 1);
 
 	matIsDirty = true;
-	transform = new mat4();
+	transform = new glm::mat4();
 }
 
 Model::~Model() {
 	//have renderer delete gl stuff
-	delete renderObject;
+	Memory::DeleteGLdata(renderObject);
+	Memory::DeleteTexture(currentTexture);
+	Memory::DeleteProgram(personalProgram);
 	delete fileName;
-	delete currentTexture;
 	delete textureName;
 	delete position;
 	delete rotation;
@@ -47,17 +50,30 @@ Model::~Model() {
 
 void Model::Startup() {
 	FBXInstance = new FBXFile();
-	//get a default program from renderer here
+	defaultProgram = Memory::CreateDefaultProgram();
 }
 void Model::Shutdown() {
 	delete FBXInstance;
 }
 
-Model* Model::LoadOBJ(string in_fileName) {
-	//pull in using tinyObj
+Model* Model::LoadOBJ(std::string in_fileName) {
+	Model* newModel = new Model();
+	std::vector<tinyobj::shape_t> shapes = std::vector<tinyobj::shape_t>();
+	std::vector<tinyobj::material_t> mats = std::vector<tinyobj::material_t>();
+
+	std::string err = tinyobj::LoadObj(shapes, mats, in_fileName.c_str());
+	printf(err.c_str());
+
+
+	for (int i = 0; i < shapes.size(); i++) {
+		for (int j = 0; j < shapes[i].mesh.positions.size(); j++) {
+
+		}
+	}
+
 	return new Model();
 }
-Model* Model::LoadFBX(string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1) {
+Model* Model::LoadFBX(std::string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1) {
 	//pull in using fbx
 	//clean up after yourself!
 	//try not unloading and compareing paths to limit unnessisary re-loading
@@ -67,7 +83,7 @@ void Model::DeleteFile(Model* in_target) {
 	delete in_target;
 }
 
-void Model::LoadTexture(string in_fileName, int in_FBXIndex = -1) {
+void Model::LoadTexture(std::string in_fileName, int in_FBXIndex = -1) {
 	if (in_FBXIndex == -1) {
 		//fbx style
 		//fbx can gl-ify the textures for me!
@@ -80,8 +96,8 @@ void Model::LoadTexture(string in_fileName, int in_FBXIndex = -1) {
 void Model::GiveProgram(unsigned int in_programID) {
 	personalProgram = in_programID;
 }
-void Model::GiveProgram(string in_VertexShaderFile, string in_fragShaderFile) {
-	//create shaders from file and have renderer handle it
+void Model::GiveProgram(std::string in_VertexShaderFile, std::string in_fragShaderFile) {
+	personalProgram = Memory::CreateProgram(in_VertexShaderFile.c_str(), in_fragShaderFile.c_str());
 }
 
 void Model::SetPostion(float in_x, float in_y, float in_z) {
@@ -112,11 +128,30 @@ void Model::Rotate(float in_x, float in_y, float in_z) {
 	matIsDirty = true;
 }
 
-mat4* Model::getTransoform() {
+glm::mat4* Model::GetTransoform() {
 	if (matIsDirty) {
-		//apply rotation
+		//apply rotaion
 		//apply position
 		matIsDirty = false;
 	}
 	return transform;
+}
+
+GLdata* Model::GetGLdata()
+{
+	return renderObject;
+}
+
+Texture* Model::GetTexture() {
+	return currentTexture;
+}
+
+unsigned int Model::GetProgram() {
+	if (personalProgram == 0) {
+		return defaultProgram;
+	}
+	else 
+	{
+		return personalProgram;
+	}
 }
