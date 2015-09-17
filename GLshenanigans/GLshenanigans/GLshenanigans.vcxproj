@@ -150,6 +150,7 @@
     <ClInclude Include="include\Model.h" />
     <ClInclude Include="include\Planet.h" />
     <ClInclude Include="include\quickGLfuncs.h" />
+    <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@
     <ClCompile Include="source\Model.cpp" />
     <ClCompile Include="source\Planet.cpp" />
     <ClCompile Include="source\quickGLfuncs.cpp" />
+    <ClCompile Include="source\Renderer.cpp" />
     <ClCompile Include="source\tiny_obj_loader.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

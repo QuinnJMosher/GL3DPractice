@@ -35,6 +35,7 @@ Model::Model() {
 }
 
 Model::~Model() {
+	//have renderer delete gl stuff
 	delete renderObject;
 	delete fileName;
 	delete currentTexture;
@@ -59,6 +60,7 @@ Model* Model::LoadOBJ(string in_fileName) {
 Model* Model::LoadFBX(string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1) {
 	//pull in using fbx
 	//clean up after yourself!
+	//try not unloading and compareing paths to limit unnessisary re-loading
 	return new Model();
 }
 void Model::DeleteFile(Model* in_target) {
@@ -68,6 +70,7 @@ void Model::DeleteFile(Model* in_target) {
 void Model::LoadTexture(string in_fileName, int in_FBXIndex = -1) {
 	if (in_FBXIndex == -1) {
 		//fbx style
+		//fbx can gl-ify the textures for me!
 	}
 	else
 	{
