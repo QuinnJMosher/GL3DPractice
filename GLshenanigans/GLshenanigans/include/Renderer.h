@@ -4,6 +4,7 @@
 #include "Model.h"
 
 class FBXVertex;
+class string;
 
 namespace Renderer {
 	namespace Drawing {
@@ -17,7 +18,7 @@ namespace Renderer {
 		GLdata* CreateGLdata(FBXVertex* in_verticies, unsigned int in_vertexCT, 
 							unsigned int* in_indicies, unsigned int in_indexCT);
 		Texture* CreateTextData(string in_filename);
-		Texture* CreateTexture(unsigned char* in_data, int in_imgWidth, int in_imgHeight);
+		Texture* CreateTexture(unsigned char* in_data, int in_imgWidth, int in_imgHeight, int in_format = -1);
 
 		unsigned int CreateDefaultProgram();
 		static unsigned int DefaultProgram;
