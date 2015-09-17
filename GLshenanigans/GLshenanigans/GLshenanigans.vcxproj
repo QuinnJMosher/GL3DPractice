@@ -147,6 +147,7 @@
     <ClInclude Include="include\GLstructs.h" />
     <ClInclude Include="include\gl_core_4_4.h" />
     <ClInclude Include="include\Input.h" />
+    <ClInclude Include="include\Model.h" />
     <ClInclude Include="include\Planet.h" />
     <ClInclude Include="include\quickGLfuncs.h" />
     <ClInclude Include="include\tiny_obj_loader.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="source\gl_core_4_4.c" />
     <ClCompile Include="source\Input.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Model.cpp" />
     <ClCompile Include="source\Planet.cpp" />
     <ClCompile Include="source\quickGLfuncs.cpp" />
     <ClCompile Include="source\tiny_obj_loader.cc" />
