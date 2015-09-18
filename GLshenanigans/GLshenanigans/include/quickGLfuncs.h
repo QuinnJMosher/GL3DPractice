@@ -4,7 +4,7 @@
 #include "GLstructs.h"
 #include "gl_core_4_4.h"
 #include "tiny_obj_loader.h"
-
+#include "Camera.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -33,7 +33,7 @@ namespace QuickFunc {
 	programID QuickTextProg();
 
 	Texture* LoadTexture(std::string in_fileName);
-	void renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture);
+	void renderTex(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture);
 
 	GLdata LoadFBX(std::string in_filename);
 	Texture* LoadFBXTexture(std::string in_filename);

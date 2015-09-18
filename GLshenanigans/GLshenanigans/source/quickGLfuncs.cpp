@@ -4,7 +4,6 @@
 #include "stb\stb_image.h"
 #include "FBXFile.h"
 
-
 GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 
 	//generate positions
@@ -332,17 +331,21 @@ Texture* QuickFunc::LoadTexture(std::string in_fileName) {
 
 }
 
-void QuickFunc::renderTex(programID renderProgram, mat4 projViewMat, GLdata in_target, Texture* in_texture) {
+void QuickFunc::renderTex(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture) {
 	glUseProgram(renderProgram);
 
 	unsigned int projectViewUniform = glGetUniformLocation(renderProgram, "ProjectionView");
-	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(projViewMat));
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(camera.getProjectionView()));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
 
 	unsigned int loc = glGetUniformLocation(renderProgram, "diffuse");
 	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(renderProgram, "cameraPos");
+	mat4 cameraTransform = camera.getWorldTransform();
+	glUniform3f(loc, cameraTransform[3][0], cameraTransform[3][1], cameraTransform[3][2]);
 
 	glBindVertexArray(in_target.VAO);
 	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
@@ -360,6 +363,7 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 	for (int i = 0; i < modelData->m_vertices.size(); i++) {
 		VertexUV newVertex;
 		newVertex.position = modelData->m_vertices[i].position;
+		newVertex.normal = modelData->m_vertices[i].normal;
 		newVertex.uv = modelData->m_vertices[i].texCoord1;
 		vertexData[i] = newVertex;
 	}
@@ -381,9 +385,11 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 2));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -429,16 +435,15 @@ unsigned int QuickFunc::loadShader(unsigned int type, const char* fileName) {
 	std::ifstream in(fileName);
 	std::string contents((std::istreambuf_iterator<char>(in)),
 						std::istreambuf_iterator<char>());
-	char* src = new char[contents.length() ];
-	
+	char* src = new char[contents.length() + 1];
 	strncpy(src, contents.c_str(), contents.length() + 1);
 	//strncpy_s(src, (contents.length() + 1) * sizeof(char), contents.c_str(), (contents.length() + 1));
 	//strncpy_s(dest, sizeInBytes, source, maxcount)
 	//strncpy_s(dest[size?], src, count)
 	unsigned int shader = glCreateShader(type);
-
+	std::cout << shader << std::endl;
 	glShaderSource(shader, 1, &src, 0);
-
+	
 	glCompileShader(shader);
 	delete[] src;
 

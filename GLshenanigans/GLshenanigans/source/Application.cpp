@@ -47,7 +47,8 @@ bool Application::Start() {
 	lastTime = glfwGetTime();
 	//renderProg = QuickFunc::QuickTextProg();
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
-	renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
+	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
+	renderProg = QuickFunc::makeProgram("./assets/shaders/tutVertex.glsl", "./assets/shaders/tutFragment.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
@@ -102,7 +103,10 @@ void Application::Draw() {
 
 	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
-	QuickFunc::renderTex(renderProg, camera.getProjectionView(), grid, tex);
+	QuickFunc::renderTex(renderProg, camera, grid, tex);
+
+	//visualize directional light
+	Gizmos::addTransform(glm::translate(vec3(-1, -1, -0.5)));
 
 	//draw
 	Gizmos::draw(camera.getProjectionView());

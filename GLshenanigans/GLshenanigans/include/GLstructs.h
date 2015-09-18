@@ -14,6 +14,7 @@ struct Vertex
 struct VertexUV
 {
 	vec4 position;
+	vec4 normal;
 	glm::vec2 uv;
 };
 
