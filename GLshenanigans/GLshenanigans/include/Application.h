@@ -60,9 +60,9 @@ private:
 	const int set_window_height = 720;
 	const char* set_window_name = "I am a Window";
 	//clear color
-	const float set_clearScr_r = 0.35f;
-	const float set_clearScr_g = 0.35f;
-	const float set_clearScr_b = 0.35f;
+	const float set_clearScr_r = 0.15f;
+	const float set_clearScr_g = 0.15f;
+	const float set_clearScr_b = 0.15f;
 	const float set_clearScr_a = 1;
 	//grid/visuals
 	const bool drawsGrid = false;

@@ -33,8 +33,8 @@ bool Application::Start() {
 	//fly cam only
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	//camera.inputContext = window;
-	camera.setSpeed(10.0f);
-	camera.rotateSensitivity = 0.5f;
+	camera.setSpeed(2.0f);
+	camera.rotateSensitivity = 0.2f;
 	//all camera
 	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
@@ -48,7 +48,6 @@ bool Application::Start() {
 	//renderProg = QuickFunc::QuickTextProg();
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
 	renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
-	//renderProg = QuickFunc::makeProgram("./assets/shaders/tutVertex.glsl", "./assets/shaders/tutFragment.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
