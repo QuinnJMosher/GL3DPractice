@@ -1,8 +1,8 @@
+#pragma warning(disable : 4996)
 #include "quickGLfuncs.h"
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb\stb_image.h"
 #include "FBXFile.h"
-
 
 
 GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
@@ -426,14 +426,15 @@ Texture* QuickFunc::LoadFBXTexture(std::string in_filename) {
 }
 
 unsigned int QuickFunc::loadShader(unsigned int type, const char* fileName) {
-
 	std::ifstream in(fileName);
 	std::string contents((std::istreambuf_iterator<char>(in)),
 						std::istreambuf_iterator<char>());
-	char* src = new char[contents.length() + 1];
-	//strncpy(src, contents.c_str(), contents.length() + 1);
-	strncpy_s(src, contents.length() * sizeof(char), contents.c_str(), contents.length() + 1);
-
+	char* src = new char[contents.length() ];
+	
+	strncpy(src, contents.c_str(), contents.length() + 1);
+	//strncpy_s(src, (contents.length() + 1) * sizeof(char), contents.c_str(), (contents.length() + 1));
+	//strncpy_s(dest, sizeInBytes, source, maxcount)
+	//strncpy_s(dest[size?], src, count)
 	unsigned int shader = glCreateShader(type);
 
 	glShaderSource(shader, 1, &src, 0);
@@ -453,6 +454,7 @@ programID QuickFunc::makeProgram(const char* vertexShFileName, const char* fragm
 
 	glAttachShader(program, vshader);
 	glAttachShader(program, fshader);
+	glLinkProgram(program);
 
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (success = GL_FALSE) {

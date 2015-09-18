@@ -45,8 +45,9 @@ bool Application::Start() {
 	glEnable(GL_DEPTH_TEST);
 
 	lastTime = glfwGetTime();
-
-	renderProg = QuickFunc::QuickTextProg();
+	//renderProg = QuickFunc::QuickTextProg();
+	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
+	renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
