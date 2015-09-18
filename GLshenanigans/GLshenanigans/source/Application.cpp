@@ -47,8 +47,8 @@ bool Application::Start() {
 	lastTime = glfwGetTime();
 	//renderProg = QuickFunc::QuickTextProg();
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
-	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
-	renderProg = QuickFunc::makeProgram("./assets/shaders/tutVertex.glsl", "./assets/shaders/tutFragment.glsl");
+	renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
+	//renderProg = QuickFunc::makeProgram("./assets/shaders/tutVertex.glsl", "./assets/shaders/tutFragment.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
@@ -57,7 +57,7 @@ bool Application::Start() {
 	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx");
 
 	//if all good
-	return true;
+	return true;	
 }
 
 void Application::Shutdown() {

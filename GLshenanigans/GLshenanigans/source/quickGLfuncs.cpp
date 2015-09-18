@@ -345,7 +345,9 @@ void QuickFunc::renderTex(programID renderProgram, Camera camera, GLdata in_targ
 
 	loc = glGetUniformLocation(renderProgram, "cameraPos");
 	mat4 cameraTransform = camera.getWorldTransform();
-	glUniform3f(loc, cameraTransform[3][0], cameraTransform[3][1], cameraTransform[3][2]);
+	//glUniform3f(loc, cameraTransform[3][0], cameraTransform[3][1], cameraTransform[3][2]);
+
+	glUniform3fv(loc, 1, glm::value_ptr(cameraTransform[3]));
 
 	glBindVertexArray(in_target.VAO);
 	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
@@ -441,7 +443,6 @@ unsigned int QuickFunc::loadShader(unsigned int type, const char* fileName) {
 	//strncpy_s(dest, sizeInBytes, source, maxcount)
 	//strncpy_s(dest[size?], src, count)
 	unsigned int shader = glCreateShader(type);
-	std::cout << shader << std::endl;
 	glShaderSource(shader, 1, &src, 0);
 	
 	glCompileShader(shader);
