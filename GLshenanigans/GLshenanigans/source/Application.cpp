@@ -47,13 +47,17 @@ bool Application::Start() {
 	lastTime = glfwGetTime();
 	//renderProg = QuickFunc::QuickTextProg();
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
-	renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
+	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
+	renderProg = QuickFunc::makeProgram("./assets/shaders/movingLightVertex.glsl", "./assets/shaders/movingLightFragment.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
 	//tex = QuickFunc::LoadTexture("./assets/crate.png");
 	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx");
+
+	light.direction = vec3(-1.0f, -1.0f, -0.5f);
+	light.color = vec3(0.5f, 0.5f, 0.5f);
 
 	//if all good
 	return true;	
@@ -79,6 +83,25 @@ bool Application::Update()
 
 	Input::Update();
 
+	if (Input::IsKey(KeyCode::KP_1, KeyState::Pressed)) {
+		light.direction = vec3(-1.0f, -1.0f, -0.5f);
+	}
+	if (Input::IsKey(KeyCode::KP_2, KeyState::Pressed)) {
+		light.direction = vec3(0.5f, 0.5f, 0.5f);
+	}
+	if (Input::IsKey(KeyCode::KP_3, KeyState::Pressed)) {
+		light.direction = vec3(-0.5f, -0.5f, -0.5f);
+	}
+	if (Input::IsKey(KeyCode::KP_4, KeyState::Pressed)) {
+		light.direction = vec3(-1.0f, 1.0f, -0.5f);
+	}
+	if (Input::IsKey(KeyCode::KP_5, KeyState::Pressed)) {
+		light.direction = vec3(1.0f, -1.0f, -0.5f);
+	}
+	if (Input::IsKey(KeyCode::KP_6, KeyState::Pressed)) {
+		light.direction = vec3(-1.0f, -1.0f, 0.5f);
+	}
+
 	lastTime = totalTime;
 	return true;
 }
@@ -102,10 +125,12 @@ void Application::Draw() {
 
 	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
-	QuickFunc::renderTex(renderProg, camera, grid, tex);
+	//QuickFunc::renderTex(renderProg, camera, grid, tex);
+	QuickFunc::renderWithLight(renderProg, camera, grid, tex, light);
 
 	//visualize directional light
-	Gizmos::addTransform(glm::translate(vec3(-1, -1, -0.5)));
+	vec3 lightSource = glm::normalize(-(light.direction)) * 10;
+	Gizmos::addTransform(glm::translate(lightSource));
 
 	//draw
 	Gizmos::draw(camera.getProjectionView());

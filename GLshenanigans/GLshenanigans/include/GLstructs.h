@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include <glm/ext.hpp>
 using glm::vec4;
+using glm::vec3;
 
 struct Vertex
 {
@@ -31,6 +32,24 @@ struct Texture {
 	int imageHeight;
 	int imageFormat;
 	unsigned int textureID;
+};
+
+struct DirectionLight {
+	vec3 direction;
+	vec3 color;
+};
+
+struct PointLight {
+	vec3 position;
+	vec3 color;
+	float falloff;
+};
+
+struct SpotLight {
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+	float falloff;
 };
 
 #endif

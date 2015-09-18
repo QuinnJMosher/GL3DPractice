@@ -48,6 +48,7 @@ private:
 
 	Geometry* geo;
 	Texture* tex;
+	DirectionLight light;
 
 	//time vars
 	float totalTime;

@@ -40,6 +40,11 @@ namespace QuickFunc {
 
 	unsigned int loadShader(unsigned int type, const char* fileName);
 	programID makeProgram(const char* vertexShFileName, const char* fragmentShFileName);
+
+	void renderWithLight(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture, DirectionLight in_light);
+	void renderWithPointLight(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture, PointLight in_light);
+	void renderWithSpotLight(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture, SpotLight in_light);
+	static vec3 ambientLightColor = vec3(0.5f, 0.5f, 0.5f);;
 }
 
 #endif
