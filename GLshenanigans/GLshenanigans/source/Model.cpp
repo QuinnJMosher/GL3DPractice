@@ -29,8 +29,8 @@ Model::Model() {
 	currentTexture = nullptr;
 	textureName = new std::string("");
 
-	position = new vec4(0, 0, 0, 1);
-	rotation = new vec4(0, 0, 0, 1);
+	position = new glm::vec4(0, 0, 0, 1);
+	rotation = new glm::vec4(0, 0, 0, 1);
 
 	matIsDirty = true;
 	transform = new glm::mat4();
@@ -73,7 +73,7 @@ Model* Model::LoadOBJ(std::string in_fileName) {
 
 	return new Model();
 }
-Model* Model::LoadFBX(std::string in_fileName, int in_modelIndex = 0, int in_textureIndex = -1) {
+Model* Model::LoadFBX(std::string in_fileName, int in_modelIndex, int in_textureIndex) {
 	//pull in using fbx
 	//clean up after yourself!
 	//try not unloading and compareing paths to limit unnessisary re-loading
@@ -83,7 +83,7 @@ void Model::DeleteFile(Model* in_target) {
 	delete in_target;
 }
 
-void Model::LoadTexture(std::string in_fileName, int in_FBXIndex = -1) {
+void Model::LoadTexture(std::string in_fileName, int in_FBXIndex) {
 	if (in_FBXIndex == -1) {
 		//fbx style
 		//fbx can gl-ify the textures for me!

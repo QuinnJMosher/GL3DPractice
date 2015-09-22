@@ -4,7 +4,6 @@
 #include "glm\glm.hpp"
 #include <string>
 
-class vec4;
 class FBXFile;
 struct GLdata;
 struct Texture;
@@ -56,8 +55,8 @@ private:
 	Texture* currentTexture;
 	std::string* textureName;
 
-	vec4* position;
-	vec4* rotation;
+	glm::vec4* position;
+	glm::vec4* rotation;
 
 	bool matIsDirty;
 	glm::mat4* transform;

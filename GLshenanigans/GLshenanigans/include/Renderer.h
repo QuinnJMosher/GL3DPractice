@@ -20,7 +20,7 @@ namespace Renderer {
 		Texture* CreateTexture(unsigned char* in_data, int in_imgWidth, int in_imgHeight, int in_format = -1);
 
 		unsigned int CreateDefaultProgram();
-		static unsigned int DefaultProgram;
+		static unsigned int DefaultProgram = 0;
 		unsigned int CreateProgram(const char* in_vertexShaderFile, const char* in_fragmentShaderFile);
 		unsigned int CreateShader(unsigned int in_type, const char* in_filepath);
 

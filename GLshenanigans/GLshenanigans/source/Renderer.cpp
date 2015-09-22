@@ -58,8 +58,6 @@ void Renderer::Drawing::DrGldataWithTex(GLdata* in_target, Texture* in_texture, 
 	glDrawElements(GL_TRIANGLES, in_target->indexCount, GL_UNSIGNED_INT, nullptr);
 }
 
-unsigned int Renderer::Memory::DefaultProgram = 0;
-
 GLdata* Renderer::Memory::CreateGLdata(FBXVertex* in_verticies, unsigned int in_vertexCT, unsigned int* in_indicies, unsigned int in_indexCT) {
 	GLdata* output = new GLdata();
 	output->indexCount = in_indexCT;
@@ -104,7 +102,7 @@ GLdata* Renderer::Memory::CreateGLdata(FBXVertex* in_verticies, unsigned int in_
 
 Texture* Renderer::Memory::CreateTextData(std::string in_filename) {
 	int width, height, format;
-	unsigned char* data = stbi_load(in_filename.c_str, &width, &height, &format, STBI_default);
+	unsigned char* data = stbi_load(in_filename.c_str(), &width, &height, &format, STBI_default);
 
 	Texture* output = Renderer::Memory::CreateTexture(data, width, height, format);
 
@@ -113,7 +111,7 @@ Texture* Renderer::Memory::CreateTextData(std::string in_filename) {
 	return output;
 }
 
-Texture* Renderer::Memory::CreateTexture(unsigned char* in_data, int in_imgWidth, int in_imgHeight, int in_format = -1) {
+Texture* Renderer::Memory::CreateTexture(unsigned char* in_data, int in_imgWidth, int in_imgHeight, int in_format) {
 	Texture* output = new Texture();
 	output->imageWidth = in_imgWidth;
 	output->imageHeight = in_imgHeight;
