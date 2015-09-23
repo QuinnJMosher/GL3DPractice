@@ -2,7 +2,10 @@
 
 in vec4 vPos;
 in vec4 vNorm;
-in vec2 vUV;
+in vec4 vTan;
+in vec4 vbiTan;
+in vec2 vUV1;
+in vec2 vUV2;
 
 out vec4 FragColor;
 
@@ -21,7 +24,7 @@ void main()
 {
 	vec3 lightDirNorm = normalize(lightDirection);
 	
-	vec3 color = texture(diffuseMap, vUV).xyz;
+	vec3 color = texture(diffuseMap, vUV1).xyz;
 	vec3 ambient = ambientColor * color;
 	
 	float lambert = max(0.0f, dot(vNorm.xyz, -lightDirNorm));

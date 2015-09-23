@@ -16,6 +16,8 @@ struct VertexUV
 {
 	vec4 position;
 	vec4 normal;
+	vec4 tangent;
+	vec4 biTangent;
 	glm::vec2 uv1;
 	glm::vec2 uv2;
 };

@@ -2,7 +2,7 @@
 
 layout(location=0) in vec4 Position;
 layout(location=1) in vec4 Normal;
-layout(location=2) in vec2 TexCoord;
+layout(location=4) in vec2 TexCoord;
 
 out vec4 vPos;
 out vec4 vNorm;

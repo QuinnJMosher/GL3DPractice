@@ -48,7 +48,8 @@ bool Application::Start() {
 	//renderProg = QuickFunc::QuickTextProg();
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
-	renderProg = QuickFunc::makeProgram("./assets/shaders/movingLightVertex.glsl", "./assets/shaders/movingLightFragment.glsl");
+	//renderProg = QuickFunc::makeProgram("./assets/shaders/movingLightVertex.glsl", "./assets/shaders/movingLightFragment.glsl");
+	renderProg = QuickFunc::makeProgram("./assets/shaders/normalMapingV.glsl", "./assets/shaders/normalMapingF.glsl");
 	//grid = QuickFunc::GenerateGrid(10, 10);
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
