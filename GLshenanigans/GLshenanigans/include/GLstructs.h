@@ -16,7 +16,8 @@ struct VertexUV
 {
 	vec4 position;
 	vec4 normal;
-	glm::vec2 uv;
+	glm::vec2 uv1;
+	glm::vec2 uv2;
 };
 
 //RenderObject

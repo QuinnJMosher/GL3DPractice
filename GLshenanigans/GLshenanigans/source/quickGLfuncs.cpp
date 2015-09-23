@@ -18,7 +18,7 @@ GLdata QuickFunc::GenerateGrid(unsigned int rows, unsigned int cols) {
 
 			//glm::vec3 color = glm::vec3(sinf((c / (float)(cols - 1)) * (r / (float)(rows - 1))));
 			//aoVertices[r * cols + c].color = vec4(color, 1);
-			aoVertices[r * cols + c].uv = glm::vec2(1 - (float)r / (rows - 1),
+			aoVertices[r * cols + c].uv1 = glm::vec2(1 - (float)r / (rows - 1),
 													(float)c / (cols - 1));
 		}
 	}
@@ -366,7 +366,8 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 		VertexUV newVertex;
 		newVertex.position = modelData->m_vertices[i].position;
 		newVertex.normal = modelData->m_vertices[i].normal;
-		newVertex.uv = modelData->m_vertices[i].texCoord1;
+		newVertex.uv1 = modelData->m_vertices[i].texCoord1;
+		newVertex.uv2 = modelData->m_vertices[i].texCoord2;
 		vertexData[i] = newVertex;
 	}
 
@@ -388,10 +389,12 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 2));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)((sizeof(glm::vec4) * 2) + (sizeof(glm::vec2))));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
