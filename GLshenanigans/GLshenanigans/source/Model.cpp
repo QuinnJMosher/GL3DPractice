@@ -57,21 +57,63 @@ void Model::Shutdown() {
 }
 
 Model* Model::LoadOBJ(std::string in_fileName) {
+	//create instance
 	Model* newModel = new Model();
+
+	//create tinyObj containers
 	std::vector<tinyobj::shape_t> shapes = std::vector<tinyobj::shape_t>();
 	std::vector<tinyobj::material_t> mats = std::vector<tinyobj::material_t>();
 
+	//load from obj
 	std::string err = tinyobj::LoadObj(shapes, mats, in_fileName.c_str());
 	printf(err.c_str());
 
+	//create temprorary containers for raw info
+	std::vector<FBXVertex>vertexes = std::vector<FBXVertex>();
+	std::vector<unsigned int>indices = std::vector<unsigned int>();
 
+	//read data
 	for (int i = 0; i < shapes.size(); i++) {
-		for (int j = 0; j < shapes[i].mesh.positions.size(); j++) {
+		int uvIndex = 0;
+		for (int j = 0; j < shapes[i].mesh.positions.size() / 3; j++) {
+			//create new vertex
+			FBXVertex newVertex;
 
+			//read posintion
+			newVertex.position.x = shapes[i].mesh.positions[3 * j + 0];
+			newVertex.position.y = shapes[i].mesh.positions[3 * j + 1];
+			newVertex.position.z = shapes[i].mesh.positions[3 * j + 2];
+			newVertex.position.w = 1;
+
+			//read normals
+			newVertex.normal.x = shapes[i].mesh.normals[3 * j + 0];
+			newVertex.normal.y = shapes[i].mesh.normals[3 * j + 1];
+			newVertex.normal.z = shapes[i].mesh.normals[3 * j + 2];
+			newVertex.normal.w = 1;
+
+			//read texcoord
+			newVertex.texCoord1.x = shapes[i].mesh.texcoords[uvIndex];
+			uvIndex++;
+			newVertex.texCoord1.y = shapes[i].mesh.texcoords[uvIndex];
+			uvIndex++;
+
+			//add vertex
+			vertexes.emplace_back(newVertex);
 		}
+		indices.insert(indices.end(),
+						shapes[i].mesh.indices.begin(),
+						shapes[i].mesh.indices.end());
+
 	}
 
-	return new Model();
+	//send data to renderer
+	newModel->renderObject = Renderer::Memory::CreateGLdata(vertexes.data(), vertexes.size(), indices.data(), indices.size());
+
+	//set filetype
+	newModel->fType = Mod_OBJ;
+	newModel->fileName = new std::string(in_fileName.c_str());
+
+	return newModel;
 }
 Model* Model::LoadFBX(std::string in_fileName, int in_modelIndex, int in_textureIndex) {
 	//pull in using fbx
