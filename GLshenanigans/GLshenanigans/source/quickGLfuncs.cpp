@@ -582,8 +582,14 @@ void QuickFunc::renderNormal(programID renderProgram, Camera camera, GLdata in_t
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
 
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, in_normalMap->textureID);
+
 	unsigned int loc = glGetUniformLocation(renderProgram, "diffuse");
 	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(renderProgram, "normal");
+	glUniform1i(loc, 1);
 
 	loc = glGetUniformLocation(renderProgram, "cameraPos");
 	mat4 cameraTransform = camera.getWorldTransform();

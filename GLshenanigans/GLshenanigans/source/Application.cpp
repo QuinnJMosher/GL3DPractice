@@ -128,7 +128,8 @@ void Application::Draw() {
 	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
 	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
 	//QuickFunc::renderTex(renderProg, camera, grid, tex);
-	QuickFunc::renderWithLight(renderProg, camera, grid, tex, light);
+	//QuickFunc::renderWithLight(renderProg, camera, grid, tex, light);
+	QuickFunc::renderNormal(renderProg, camera, grid, tex, normalMap, light);
 
 	//visualize directional light
 	vec3 lightSource = glm::normalize(-(light.direction)) * 10;
