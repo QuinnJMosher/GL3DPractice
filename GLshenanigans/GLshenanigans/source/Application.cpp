@@ -160,3 +160,43 @@ void Application::DrawGrid() {
 void Application::DrawCentre() {
 	Gizmos::addTransform(glm::mat4(1));
 }
+
+FrameBuffer QuickFunc::createFrameBuffer(int in_Width, int in_heignt) {
+	FrameBuffer output;
+	
+	output.imageWidth = in_Width;
+	output.imageHeight = in_heignt;
+
+	//generate
+	glGenFramebuffers(1, &output.FBO);
+	glGenTextures(1, &output.textureID);
+	glGenRenderbuffers(1, &output.RenderBuffer);
+
+	//bind
+	glBindFramebuffer(GL_FRAMEBUFFER, output.FBO);
+	glBindTexture(GL_TEXTURE_2D, output.textureID);
+	glBindRenderbuffer(GL_RENDERBUFFER, output.RenderBuffer);
+
+	//setup
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, in_Width, in_heignt);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, output.textureID, 0);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, output.RenderBuffer);
+
+	//checkstatus
+	//unbind
+}
+
+void QuickFunc::drawToBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light, FrameBuffer in_targetBuffer) {
+
+}
+
+void QuickFunc::drawBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, FrameBuffer in_sorceBuffer) {
+
+}
+
+GLdata QuickFunc::makeAThing() {
+
+}

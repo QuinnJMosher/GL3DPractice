@@ -47,6 +47,12 @@ namespace QuickFunc {
 	static vec3 ambientLightColor = vec3(0.5f, 0.5f, 0.5f);
 
 	void renderNormal(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light);
+	
+	FrameBuffer createFrameBuffer(int in_Width, int in_heignt);
+	void drawToBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light, FrameBuffer in_targetBuffer);
+	void drawBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, FrameBuffer in_sorceBuffer);
+
+	GLdata makeAThing();
 }
 
 #endif

@@ -54,4 +54,12 @@ struct SpotLight {
 	float falloff;
 };
 
+struct FrameBuffer {
+	unsigned int FBO;
+	unsigned int textureID;
+	int imageHeight;
+	int imageWidth;
+	unsigned int RenderBuffer;
+};
+
 #endif
