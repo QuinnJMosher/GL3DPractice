@@ -366,6 +366,7 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 		VertexUV newVertex;
 		newVertex.position = modelData->m_vertices[i].position;
 		newVertex.normal = modelData->m_vertices[i].normal;
+		newVertex.tangent = modelData->m_vertices[i].tangent;
 		newVertex.uv1 = modelData->m_vertices[i].texCoord1;
 		newVertex.uv2 = modelData->m_vertices[i].texCoord2;
 		vertexData[i] = newVertex;
@@ -391,14 +392,12 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	glEnableVertexAttribArray(5);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexUV), 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_TRUE, sizeof(VertexUV), (void*)(sizeof(glm::vec4)));
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 2));
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_TRUE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 3));
-	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 4));
-	glVertexAttribPointer(5, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)((sizeof(glm::vec4) * 4) + (sizeof(glm::vec2))));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)(sizeof(glm::vec4) * 3));
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexUV), (void*)((sizeof(glm::vec4) * 3) + (sizeof(glm::vec2))));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -585,7 +584,7 @@ void QuickFunc::renderNormal(programID renderProgram, Camera camera, GLdata in_t
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, in_normalMap->textureID);
 
-	unsigned int loc = glGetUniformLocation(renderProgram, "diffuse");
+	unsigned int loc = glGetUniformLocation(renderProgram, "diffuseMap");
 	glUniform1i(loc, 0);
 
 	loc = glGetUniformLocation(renderProgram, "normal");
