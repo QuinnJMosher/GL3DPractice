@@ -411,12 +411,12 @@ GLdata QuickFunc::LoadFBX(std::string in_filename) {
 	return output;
 }
 
-Texture* QuickFunc::LoadFBXTexture(std::string in_filename) {
+Texture* QuickFunc::LoadFBXTexture(std::string in_filename, int in_index) {
 	FBXFile fbxFile;
 	fbxFile.initialiseOpenGLTextures();
 	fbxFile.load(in_filename.c_str());
 
-	FBXTexture* derp = fbxFile.getTextureByIndex(0);
+	FBXTexture* derp = fbxFile.getTextureByIndex(in_index);
 
 	Texture* output = new Texture();
 
@@ -562,6 +562,35 @@ void QuickFunc::renderWithSpotLight(programID renderProgram, Camera camera, GLda
 
 	loc = glGetUniformLocation(renderProgram, "lightPosition");
 	glUniform3fv(loc, 1, glm::value_ptr(in_light.position));
+
+	loc = glGetUniformLocation(renderProgram, "lightColor");
+	glUniform3fv(loc, 1, glm::value_ptr(in_light.color));
+
+	loc = glGetUniformLocation(renderProgram, "ambientColor");
+	glUniform3fv(loc, 1, glm::value_ptr(ambientLightColor));
+
+	glBindVertexArray(in_target.VAO);
+	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void QuickFunc::renderNormal(programID renderProgram, Camera camera, GLdata in_target, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light) {
+	glUseProgram(renderProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(renderProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(camera.getProjectionView()));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
+
+	unsigned int loc = glGetUniformLocation(renderProgram, "diffuse");
+	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(renderProgram, "cameraPos");
+	mat4 cameraTransform = camera.getWorldTransform();
+	glUniform3fv(loc, 1, glm::value_ptr(cameraTransform[3]));
+
+	loc = glGetUniformLocation(renderProgram, "lightDirection");
+	glUniform3fv(loc, 1, glm::value_ptr(in_light.direction));
 
 	loc = glGetUniformLocation(renderProgram, "lightColor");
 	glUniform3fv(loc, 1, glm::value_ptr(in_light.color));

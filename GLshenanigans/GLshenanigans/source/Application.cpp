@@ -55,7 +55,8 @@ bool Application::Start() {
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
 	//tex = QuickFunc::LoadTexture("./assets/crate.png");
-	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx");
+	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 0);
+	normalMap = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 1);
 
 	light.direction = vec3(-1.0f, -1.0f, -0.5f);
 	light.color = vec3(0.5f, 0.5f, 0.5f);

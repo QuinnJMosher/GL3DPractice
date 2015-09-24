@@ -48,6 +48,7 @@ private:
 
 	Geometry* geo;
 	Texture* tex;
+	Texture* normalMap;
 	DirectionLight light;
 
 	//time vars
