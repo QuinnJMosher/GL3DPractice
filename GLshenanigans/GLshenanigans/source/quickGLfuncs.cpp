@@ -606,3 +606,122 @@ void QuickFunc::renderNormal(programID renderProgram, Camera camera, GLdata in_t
 	glBindVertexArray(in_target.VAO);
 	glDrawElements(GL_TRIANGLES, in_target.indexCount, GL_UNSIGNED_INT, nullptr);
 }
+
+
+FrameBuffer QuickFunc::createFrameBuffer(int in_Width, int in_heignt) {
+	FrameBuffer output;
+
+	output.imageWidth = in_Width;
+	output.imageHeight = in_heignt;
+
+	//generate
+	glGenFramebuffers(1, &output.FBO);
+	glGenTextures(1, &output.textureID);
+	glGenRenderbuffers(1, &output.RenderBuffer);
+
+	//bind
+	glBindFramebuffer(GL_FRAMEBUFFER, output.FBO);
+	glBindTexture(GL_TEXTURE_2D, output.textureID);
+	glBindRenderbuffer(GL_RENDERBUFFER, output.RenderBuffer);
+
+	//setup
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, in_Width, in_heignt);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, output.textureID, 0);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, in_Width, in_heignt);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, output.RenderBuffer);
+
+	//checkstatus
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		printf("framebuffer error!\n");
+	}
+
+	//unbind
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	return output;
+}
+
+void QuickFunc::drawToBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light, FrameBuffer in_targetBuffer) {
+	glBindFramebuffer(GL_FRAMEBUFFER, in_targetBuffer.FBO);
+	glUseProgram(in_renderProgram);
+	glViewport(0, 0, in_targetBuffer.imageWidth, in_targetBuffer.imageHeight);
+
+	unsigned int projectViewUniform = glGetUniformLocation(in_renderProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_camera.getProjectionView()));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_texture->textureID);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, in_normalMap->textureID);
+
+	unsigned int loc = glGetUniformLocation(in_renderProgram, "diffuseMap");
+	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(in_renderProgram, "normal");
+	glUniform1i(loc, 1);
+
+	loc = glGetUniformLocation(in_renderProgram, "cameraPos");
+	mat4 cameraTransform = in_camera.getWorldTransform();
+	glUniform3fv(loc, 1, glm::value_ptr(cameraTransform[3]));
+
+	loc = glGetUniformLocation(in_renderProgram, "lightDirection");
+	glUniform3fv(loc, 1, glm::value_ptr(in_light.direction));
+
+	loc = glGetUniformLocation(in_renderProgram, "lightColor");
+	glUniform3fv(loc, 1, glm::value_ptr(in_light.color));
+
+	loc = glGetUniformLocation(in_renderProgram, "ambientColor");
+	glUniform3fv(loc, 1, glm::value_ptr(ambientLightColor));
+
+	glBindVertexArray(in_model.VAO);
+	glDrawElements(GL_TRIANGLES, in_model.indexCount, GL_UNSIGNED_INT, nullptr);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void QuickFunc::drawBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, FrameBuffer in_sorceBuffer) {
+	glUseProgram(in_renderProgram);
+
+	unsigned int projectViewUniform = glGetUniformLocation(in_renderProgram, "ProjectionView");
+	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_camera.getProjectionView()));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_sorceBuffer.textureID);
+
+
+	unsigned int loc = glGetUniformLocation(in_renderProgram, "diffuseMap");
+	glUniform1i(loc, 0);
+
+	loc = glGetUniformLocation(in_renderProgram, "cameraPos");
+	mat4 cameraTransform = in_camera.getWorldTransform();
+	glUniform3fv(loc, 1, glm::value_ptr(cameraTransform[3]));
+
+	loc = glGetUniformLocation(in_renderProgram, "lightDirection");
+	glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
+
+	loc = glGetUniformLocation(in_renderProgram, "lightColor");
+	glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
+
+	loc = glGetUniformLocation(in_renderProgram, "ambientColor");
+	glUniform3fv(loc, 1, glm::value_ptr(ambientLightColor));
+
+	glBindVertexArray(in_model.VAO);
+	glDrawElements(GL_TRIANGLES, in_model.indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void QuickFunc::clearFrameBuffer(FrameBuffer in_framebuffer) {
+	glBindFramebuffer(GL_FRAMEBUFFER, in_framebuffer.FBO);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+GLdata QuickFunc::makeAThing() {
+	return GLdata();
+}
