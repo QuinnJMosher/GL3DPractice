@@ -37,9 +37,14 @@ private:
 
 	//logic vars
 	FlyCamera camera;
+	Camera stillCamera;
 
 	programID renderProg;
+	programID simpleProg;
 	GLdata grid;
+
+	GLdata buffDisplay;
+	FrameBuffer frameBuff;
 
 	//active variables
 	GLFWwindow* window;

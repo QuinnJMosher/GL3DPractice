@@ -39,6 +39,9 @@ bool Application::Start() {
 	camera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
 	camera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
 
+	stillCamera.setLookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
+	stillCamera.setPerspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
+
 	//settings
 	glClearColor(set_clearScr_r, set_clearScr_g, set_clearScr_b, set_clearScr_a);
 
@@ -46,11 +49,11 @@ bool Application::Start() {
 
 	lastTime = glfwGetTime();
 	//renderProg = QuickFunc::QuickTextProg();
-	//renderProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
+	simpleProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
 	//renderProg = QuickFunc::makeProgram("./assets/shaders/movingLightVertex.glsl", "./assets/shaders/movingLightFragment.glsl");
 	renderProg = QuickFunc::makeProgram("./assets/shaders/normalMapingV.glsl", "./assets/shaders/normalMapingF.glsl");
-	//grid = QuickFunc::GenerateGrid(10, 10);
+	buffDisplay = QuickFunc::LoadFBX("./assets/cube.fbx");
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
 	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
@@ -60,6 +63,10 @@ bool Application::Start() {
 
 	light.direction = vec3(-1.0f, -1.0f, -0.5f);
 	light.color = vec3(0.5f, 0.5f, 0.5f);
+
+	frameBuff = QuickFunc::createFrameBuffer(set_window_width, set_window_height);
+	QuickFunc::clearFrameBuffer(frameBuff);
+	QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);
 
 	//if all good
 	return true;	
@@ -130,6 +137,14 @@ void Application::Draw() {
 	//QuickFunc::renderTex(renderProg, camera, grid, tex);
 	//QuickFunc::renderWithLight(renderProg, camera, grid, tex, light);
 	QuickFunc::renderNormal(renderProg, camera, grid, tex, normalMap, light);
+
+	Texture* tempTex = new Texture();
+	tempTex->textureID = frameBuff.textureID;
+	tempTex->imageWidth = frameBuff.imageWidth;
+	tempTex->imageHeight = frameBuff.imageHeight;
+
+	QuickFunc::renderNormal(renderProg, camera, buffDisplay, tempTex, normalMap, light);
+	//QuickFunc::drawBuffer(simpleProg, camera, buffDisplay, frameBuff);
 
 	//visualize directional light
 	vec3 lightSource = glm::normalize(-(light.direction)) * 10;

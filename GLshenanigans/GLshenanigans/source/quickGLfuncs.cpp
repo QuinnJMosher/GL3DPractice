@@ -649,8 +649,9 @@ FrameBuffer QuickFunc::createFrameBuffer(int in_Width, int in_heignt) {
 
 void QuickFunc::drawToBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, Texture* in_texture, Texture* in_normalMap, DirectionLight in_light, FrameBuffer in_targetBuffer) {
 	glBindFramebuffer(GL_FRAMEBUFFER, in_targetBuffer.FBO);
-	glUseProgram(in_renderProgram);
 	glViewport(0, 0, in_targetBuffer.imageWidth, in_targetBuffer.imageHeight);
+	
+	glUseProgram(in_renderProgram);
 
 	unsigned int projectViewUniform = glGetUniformLocation(in_renderProgram, "ProjectionView");
 	glUniformMatrix4fv(projectViewUniform, 1, GL_FALSE, glm::value_ptr(in_camera.getProjectionView()));
@@ -703,14 +704,14 @@ void QuickFunc::drawBuffer(programID in_renderProgram, Camera in_camera, GLdata 
 	mat4 cameraTransform = in_camera.getWorldTransform();
 	glUniform3fv(loc, 1, glm::value_ptr(cameraTransform[3]));
 
-	loc = glGetUniformLocation(in_renderProgram, "lightDirection");
-	glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
+	//loc = glGetUniformLocation(in_renderProgram, "lightDirection");
+	//glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
 
-	loc = glGetUniformLocation(in_renderProgram, "lightColor");
-	glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
+	//loc = glGetUniformLocation(in_renderProgram, "lightColor");
+	//glUniform3fv(loc, 1, glm::value_ptr(glm::vec3(0, 0, 0)));
 
-	loc = glGetUniformLocation(in_renderProgram, "ambientColor");
-	glUniform3fv(loc, 1, glm::value_ptr(ambientLightColor));
+	//loc = glGetUniformLocation(in_renderProgram, "ambientColor");
+	//glUniform3fv(loc, 1, glm::value_ptr(ambientLightColor));
 
 	glBindVertexArray(in_model.VAO);
 	glDrawElements(GL_TRIANGLES, in_model.indexCount, GL_UNSIGNED_INT, nullptr);
