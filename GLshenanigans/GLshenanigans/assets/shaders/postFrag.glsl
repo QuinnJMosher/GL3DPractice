@@ -69,18 +69,40 @@ vec4 Sharpen() {
 	return color;
 }
 
-/*vec4 Sobel() {
+vec4 Sobel() {
 	vec4 colorX = vec4(0, 0, 0, 1);
 	vec4 colorY = vec4(0, 0, 0, 1);
 	
 	vec2 texel = 1.0f / textureSize(diffuse, 0);
 	
 	//x
-	colorX 
-}*/
+	colorX += texture(diffuse, vTexCoord + vec2(-texel.x, -texel.y)) * -1;
+	colorX += texture(diffuse, vTexCoord + vec2(-texel.x, 0)) * -2;
+	colorX += texture(diffuse, vTexCoord + vec2(-texel.x, texel.y)) * -1;
+	
+	colorX += texture(diffuse, vTexCoord + vec2(texel.x, -texel.y)) * 1;
+	colorX += texture(diffuse, vTexCoord + vec2(texel.x, 0)) * 2;
+	colorX += texture(diffuse, vTexCoord + vec2(texel.x, texel.y)) * 1;
+	
+	//y
+	colorY += texture(diffuse, vTexCoord + vec2(-texel.x, texel.y)) * -1;
+	colorY += texture(diffuse, vTexCoord + vec2(0, texel.y)) * -2;
+	colorY += texture(diffuse, vTexCoord + vec2(texel.x, texel.y)) * -1;
+	
+	colorY += texture(diffuse, vTexCoord + vec2(-texel.x, -texel.y)) * 1;
+	colorY += texture(diffuse, vTexCoord + vec2(0, -texel.y)) * 2;
+	colorY += texture(diffuse, vTexCoord + vec2(texel.x, -texel.y)) * 1;
+	
+	vec4 totalColor = vec4(0, 0, 0, 1);
+	
+	totalColor.x = sqrt(pow(colorX.x, 2) + pow(colorY.x, 2));
+	totalColor.y = sqrt(pow(colorX.y, 2) + pow(colorY.y, 2));
+	totalColor.z = sqrt(pow(colorX.z, 2) + pow(colorY.z, 2));
+	
+	return totalColor;
+}
 
 void main() {
-
-	FragColor = Sharpen();
+	FragColor = Sobel();
 	
 }
