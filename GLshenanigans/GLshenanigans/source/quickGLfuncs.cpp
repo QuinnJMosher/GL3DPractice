@@ -725,39 +725,29 @@ void QuickFunc::clearFrameBuffer(FrameBuffer in_framebuffer) {
 
 GLdata QuickFunc::ReadyPostProcessing(int in_screenWidth, int in_screenHeight) {
 
-	glm::vec2 texelSize = 1.0f / glm::vec2(in_screenWidth, in_screenHeight);
 	glm::vec2 halfTexel = 1.0f / glm::vec2(in_screenWidth, in_screenHeight) * 0.5f;
 
-	float vertexData[] = {
-		-1, -1, 0, 1, halfTexel.x, halfTexel.y,
-		 1,  1, 0, 1, 1 - halfTexel.x, 1 - halfTexel.y,
-		-1,  1, 0, 1, halfTexel.x, 1 - halfTexel.y,
-
-		-1, -1, 0, 1, halfTexel.x, halfTexel.y,
-		 1, -1, 0, 1, 1 - halfTexel.x, halfTexel.y,
-		 1,  1, 0, 1, 1 - halfTexel.x, 1 - halfTexel.y,
-	};
-
-	unsigned int indexData[] = { 0, 1, 2,     2, 3, 1 };
+	unsigned int indexData[] = { 0, 1, 2,     2, 0, 3 };
 	VertexUV* vertexDatas = new VertexUV[4];
 	vertexDatas[0] = VertexUV();
 	vertexDatas[0].position = glm::vec4(-1, -1, 0, 1);
+	vertexDatas[0].uv1 = glm::vec2(halfTexel.x, halfTexel.y);
 
+	vertexDatas[1] = VertexUV();
+	vertexDatas[1].position = glm::vec4(-1, 1, 0, 1);
+	vertexDatas[1].uv1 = glm::vec2(halfTexel.x, 1 - halfTexel.y);
 
+	vertexDatas[2] = VertexUV();
+	vertexDatas[2].position = glm::vec4(1, 1, 0, 1);
+	vertexDatas[2].uv1 = glm::vec2(1 - halfTexel.x, 1 - halfTexel.y);
 
-	for (int i = 0; i < modelData->m_vertices.size(); i++) {
-		VertexUV newVertex;
-		newVertex.position = modelData->m_vertices[i].position;
-		newVertex.normal = modelData->m_vertices[i].normal;
-		newVertex.tangent = modelData->m_vertices[i].tangent;
-		newVertex.uv1 = modelData->m_vertices[i].texCoord1;
-		newVertex.uv2 = modelData->m_vertices[i].texCoord2;
-		vertexData[i] = newVertex;
-	}
+	vertexDatas[3] = VertexUV();
+	vertexDatas[3].position = glm::vec4(1, -1, 0, 1);
+	vertexDatas[3].uv1 = glm::vec2(1 - halfTexel.x, halfTexel.y);
 
 	//create gldata
 	GLdata output;
-	output.indexCount = modelData->m_indices.size();
+	output.indexCount = 6;
 
 	glGenVertexArrays(1, &output.VAO);
 	glGenBuffers(1, &output.VBO);
@@ -767,8 +757,8 @@ GLdata QuickFunc::ReadyPostProcessing(int in_screenWidth, int in_screenHeight) {
 	glBindBuffer(GL_ARRAY_BUFFER, output.VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, output.IBO);
 
-	glBufferData(GL_ARRAY_BUFFER, modelData->m_vertices.size() * sizeof(VertexUV), vertexData, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, output.indexCount * sizeof(unsigned int), modelData->m_indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(VertexUV), vertexDatas, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, output.indexCount * sizeof(unsigned int), indexData, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -786,22 +776,19 @@ GLdata QuickFunc::ReadyPostProcessing(int in_screenWidth, int in_screenHeight) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	//destroy stuff
-	delete[] vertexData;
-	fbxFile.unload();
-
 	return output;
 }
 
 void QuickFunc::DrawPostProcessing(FrameBuffer in_frambuffer, GLdata in_targetBox, programID in_program) {
-	glUseProgram(in_program);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE0, in_frambuffer.textureID);
 
-	int loc = glGetUniformLocation(in_program, "Target");
+	glUseProgram(in_program);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, in_frambuffer.textureID);
+
+	unsigned int loc = glGetUniformLocation(in_program, "diffuse");
 	glUniform1i(loc, 0);
 
 	glBindVertexArray(in_targetBox.VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawElements(GL_TRIANGLES, in_targetBox.indexCount, GL_UNSIGNED_INT, nullptr);
 }

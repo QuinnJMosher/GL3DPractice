@@ -53,13 +53,13 @@ bool Application::Start() {
 	renderProg = QuickFunc::makeProgram("./assets/shaders/normalMapingV.glsl", "./assets/shaders/normalMapingF.glsl");
 	postProg = QuickFunc::makeProgram("./assets/shaders/postVert.glsl", "./assets/shaders/postFrag.glsl");
 	
-	buffDisplay = QuickFunc::LoadFBX("./assets/cube.fbx");
+	//buffDisplay = QuickFunc::LoadFBX("./assets/cube.fbx");
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
 	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 0);
 	normalMap = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 1);
 
-	//buffDisplay = QuickFunc::ReadyPostProcessing(set_window_width, set_window_height);
+	buffDisplay = QuickFunc::ReadyPostProcessing(set_window_width, set_window_height);
 
 	light.direction = vec3(-1.0f, -1.0f, -0.5f);
 	light.color = vec3(0.5f, 0.5f, 0.5f);
@@ -134,21 +134,9 @@ void Application::Draw() {
 
 	//put things on the fbo
 	QuickFunc::clearFrameBuffer(frameBuff);
-	QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);
+	QuickFunc::drawToBuffer(renderProg, camera, grid, tex, normalMap, light, frameBuff);
 
-	//put things on the backbuffer
-	QuickFunc::renderNormal(renderProg, camera, grid, tex, normalMap, light);
-
-	//put the fbo's tex data into a texture so i can use a known good function to put it on the backbuffer
-	Texture* tempTex = new Texture();
-	tempTex->textureID = frameBuff.textureID;
-	tempTex->imageWidth = frameBuff.imageWidth;
-	tempTex->imageHeight = frameBuff.imageHeight;
-
-	//put fbo on the backbuffer (i'm using a cube)
-	QuickFunc::renderTex(postProg, camera, buffDisplay, tempTex);
-	//QuickFunc::drawBuffer(simpleProg, camera, buffDisplay, frameBuff);
-
+	//put fbo on screen
 	QuickFunc::DrawPostProcessing(frameBuff, buffDisplay, postProg);
 
 	////visualize directional light
