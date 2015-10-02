@@ -41,6 +41,7 @@ private:
 
 	programID renderProg;
 	programID simpleProg;
+	programID postProg;
 	GLdata grid;
 
 	GLdata buffDisplay;
@@ -73,7 +74,7 @@ private:
 	const float set_clearScr_a = 1;
 	//grid/visuals
 	const bool drawsGrid = false;
-	const bool drawsCentre = true;
+	const bool drawsCentre = false;
 };
 
 #endif

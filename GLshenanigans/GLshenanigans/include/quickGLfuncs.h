@@ -53,7 +53,8 @@ namespace QuickFunc {
 	void drawBuffer(programID in_renderProgram, Camera in_camera, GLdata in_model, FrameBuffer in_sorceBuffer);
 	void clearFrameBuffer(FrameBuffer in_framebuffer);
 
-	GLdata makeAThing();
+	GLdata ReadyPostProcessing(int in_screenWidth, int in_screenHeight);
+	void DrawPostProcessing(FrameBuffer in_frambuffer, GLdata in_targetBox, programID in_program);
 }
 
 #endif

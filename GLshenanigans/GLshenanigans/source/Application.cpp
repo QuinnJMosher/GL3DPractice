@@ -48,25 +48,25 @@ bool Application::Start() {
 	glEnable(GL_DEPTH_TEST);
 
 	lastTime = glfwGetTime();
-	//renderProg = QuickFunc::QuickTextProg();
+	
 	simpleProg = QuickFunc::makeProgram("./assets/shaders/textureVertex.glsl", "./assets/shaders/textureFragment.glsl");
-	//renderProg = QuickFunc::makeProgram("./assets/shaders/lightVertex.glsl", "./assets/shaders/lightFragment.glsl");
-	//renderProg = QuickFunc::makeProgram("./assets/shaders/movingLightVertex.glsl", "./assets/shaders/movingLightFragment.glsl");
 	renderProg = QuickFunc::makeProgram("./assets/shaders/normalMapingV.glsl", "./assets/shaders/normalMapingF.glsl");
+	postProg = QuickFunc::makeProgram("./assets/shaders/postVert.glsl", "./assets/shaders/postFrag.glsl");
+	
 	buffDisplay = QuickFunc::LoadFBX("./assets/cube.fbx");
 	grid = QuickFunc::LoadFBX("./assets/soulspear/soulspear.fbx");
 
-	//geo = QuickFunc::loadGeometry("./assets/dragon.obj");
-	//tex = QuickFunc::LoadTexture("./assets/crate.png");
 	tex = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 0);
 	normalMap = QuickFunc::LoadFBXTexture("./assets/soulspear/soulspear.fbx", 1);
+
+	//buffDisplay = QuickFunc::ReadyPostProcessing(set_window_width, set_window_height);
 
 	light.direction = vec3(-1.0f, -1.0f, -0.5f);
 	light.color = vec3(0.5f, 0.5f, 0.5f);
 
 	frameBuff = QuickFunc::createFrameBuffer(set_window_width, set_window_height);
-	QuickFunc::clearFrameBuffer(frameBuff);
-	QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);
+	/*QuickFunc::clearFrameBuffer(frameBuff);*/
+	/*QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);*/
 
 	//if all good
 	return true;	
@@ -132,26 +132,31 @@ void Application::Draw() {
 		DrawCentre();
 	}
 
-	//QuickFunc::EasyReder(renderProg, camera.getProjectionView(), grid, totalTime);
-	//QuickFunc::renderGeo(renderProg, camera.getProjectionView(), geo);
-	//QuickFunc::renderTex(renderProg, camera, grid, tex);
-	//QuickFunc::renderWithLight(renderProg, camera, grid, tex, light);
+	//put things on the fbo
+	QuickFunc::clearFrameBuffer(frameBuff);
+	QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);
+
+	//put things on the backbuffer
 	QuickFunc::renderNormal(renderProg, camera, grid, tex, normalMap, light);
 
+	//put the fbo's tex data into a texture so i can use a known good function to put it on the backbuffer
 	Texture* tempTex = new Texture();
 	tempTex->textureID = frameBuff.textureID;
 	tempTex->imageWidth = frameBuff.imageWidth;
 	tempTex->imageHeight = frameBuff.imageHeight;
 
-	QuickFunc::renderNormal(renderProg, camera, buffDisplay, tempTex, normalMap, light);
+	//put fbo on the backbuffer (i'm using a cube)
+	QuickFunc::renderTex(postProg, camera, buffDisplay, tempTex);
 	//QuickFunc::drawBuffer(simpleProg, camera, buffDisplay, frameBuff);
 
-	//visualize directional light
-	vec3 lightSource = glm::normalize(-(light.direction)) * 10;
-	Gizmos::addTransform(glm::translate(lightSource));
+	QuickFunc::DrawPostProcessing(frameBuff, buffDisplay, postProg);
+
+	////visualize directional light
+	//vec3 lightSource = glm::normalize(-(light.direction)) * 10;
+	//Gizmos::addTransform(glm::translate(lightSource));
 
 	//draw
-	Gizmos::draw(camera.getProjectionView());
+	//Gizmos::draw(camera.getProjectionView());
 	
 	//glfw update
 	glfwSwapBuffers(window);
