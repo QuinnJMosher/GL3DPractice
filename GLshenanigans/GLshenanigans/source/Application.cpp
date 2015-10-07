@@ -68,6 +68,100 @@ bool Application::Start() {
 	/*QuickFunc::clearFrameBuffer(frameBuff);*/
 	/*QuickFunc::drawToBuffer(simpleProg, camera, grid, tex, normalMap, light, frameBuff);*/
 
+	//deff rendering shenanigans
+	//create geoBuff
+	geoBuff.imageWidth = set_window_width;
+	geoBuff.imageHeight = set_window_height;
+
+	geoBuff_posTex.imageWidth = set_window_width;
+	geoBuff_posTex.imageHeight = set_window_height;
+
+	geoBuff_normTex.imageWidth = set_window_width;
+	geoBuff_normTex.imageHeight = set_window_height;
+
+	//generate
+	glGenFramebuffers(1, &geoBuff.FBO);
+	glGenTextures(1, &geoBuff.textureID);
+	glGenTextures(1, &geoBuff_posTex.textureID);
+	glGenTextures(1, &geoBuff_normTex.textureID);
+	glGenRenderbuffers(1, &geoBuff.RenderBuffer);
+
+	//bind
+	glBindFramebuffer(GL_FRAMEBUFFER, geoBuff.FBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, geoBuff.RenderBuffer);
+
+	//setuptextures
+	glBindTexture(GL_TEXTURE_2D, geoBuff.textureID);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, set_window_width, set_window_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, geoBuff_posTex.textureID);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB32F, set_window_width, set_window_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, geoBuff_normTex.textureID);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB32F, set_window_width, set_window_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	//setup renderbuffer
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, set_window_width, set_window_height);
+
+	//associate buffers
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, geoBuff.textureID, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, geoBuff_posTex.textureID, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, geoBuff_normTex.textureID, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, geoBuff.RenderBuffer);
+
+	GLenum geoBuffTargets[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, geoBuffTargets);
+
+	//unbind
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	//create lightBuff
+	lightBuff.imageWidth = set_window_width;
+	lightBuff.imageHeight = set_window_height;
+
+	//generate
+	glGenFramebuffers(1, &lightBuff.FBO);
+	glGenTextures(1, &lightBuff.textureID);
+	glGenRenderbuffers(1, &lightBuff.RenderBuffer);
+
+	//bind
+	glBindFramebuffer(GL_FRAMEBUFFER, lightBuff.FBO);
+	glBindTexture(GL_TEXTURE_2D, lightBuff.textureID);
+	glBindRenderbuffer(GL_RENDERBUFFER, lightBuff.RenderBuffer);
+
+	//setup
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, set_window_width, set_window_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, lightBuff.textureID, 0);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, set_window_width, set_window_height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, lightBuff.RenderBuffer);
+
+	GLenum lightBuffTargets[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, lightBuffTargets);
+
+	//checkstatus
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		printf("framebuffer error!\n");
+	}
+
+	//unbind
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	renderPlane = QuickFunc::ReadyPostProcessing(set_window_width, set_window_height);
+
 	//if all good
 	return true;	
 }
@@ -138,13 +232,6 @@ void Application::Draw() {
 
 	//put fbo on screen
 	QuickFunc::DrawPostProcessing(frameBuff, buffDisplay, postProg);
-
-	////visualize directional light
-	//vec3 lightSource = glm::normalize(-(light.direction)) * 10;
-	//Gizmos::addTransform(glm::translate(lightSource));
-
-	//draw
-	//Gizmos::draw(camera.getProjectionView());
 	
 	//glfw update
 	glfwSwapBuffers(window);

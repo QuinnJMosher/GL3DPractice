@@ -792,3 +792,13 @@ void QuickFunc::DrawPostProcessing(FrameBuffer in_frambuffer, GLdata in_targetBo
 	glBindVertexArray(in_targetBox.VAO);
 	glDrawElements(GL_TRIANGLES, in_targetBox.indexCount, GL_UNSIGNED_INT, nullptr);
 }
+
+void QuickFunc::BindFBO(FrameBuffer in_FBO) {
+	glBindFramebuffer(GL_FRAMEBUFFER, in_FBO.FBO);
+	glViewport(0, 0, in_FBO.imageWidth, in_FBO.imageHeight);
+}
+
+void QuickFunc::UnbindFBO(int in_screenWidth, int in_screenHeight) {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, in_screenWidth, in_screenHeight);
+}

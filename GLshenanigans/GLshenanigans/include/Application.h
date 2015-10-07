@@ -57,6 +57,18 @@ private:
 	Texture* normalMap;
 	DirectionLight light;
 
+	//deff rendering vars
+	programID geoProg;
+	programID lightProg;
+	programID compProg;
+
+	FrameBuffer geoBuff;
+	Texture geoBuff_posTex;
+	Texture geoBuff_normTex;
+	FrameBuffer lightBuff;
+
+	GLdata renderPlane;
+
 	//time vars
 	float totalTime;
 	float lastTime;

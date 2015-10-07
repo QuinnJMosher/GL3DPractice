@@ -55,6 +55,9 @@ namespace QuickFunc {
 
 	GLdata ReadyPostProcessing(int in_screenWidth, int in_screenHeight);
 	void DrawPostProcessing(FrameBuffer in_frambuffer, GLdata in_targetBox, programID in_program);
+
+	void BindFBO(FrameBuffer in_FBO);
+	void UnbindFBO(int in_screenWidth, int in_screenHeight);
 }
 
 #endif
