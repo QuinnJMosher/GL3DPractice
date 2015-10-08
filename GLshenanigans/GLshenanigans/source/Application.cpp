@@ -217,9 +217,11 @@ void Application::Draw() {
 
 	int uniformLoc;
 
+	//geo
 	glEnable(GL_DEPTH_TEST);
 
-	QuickFunc::BindFBO(geoBuff);
+	glBindFramebuffer(GL_FRAMEBUFFER, geoBuff.FBO);
+	//QuickFunc::BindFBO(geoBuff);
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -234,7 +236,9 @@ void Application::Draw() {
 	glBindVertexArray(grid.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, grid.indexCount);
 
-	QuickFunc::BindFBO(lightBuff);
+	//light
+	glBindFramebuffer(GL_FRAMEBUFFER, lightBuff.FBO);
+	//QuickFunc::BindFBO(geoBuff);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
@@ -264,7 +268,9 @@ void Application::Draw() {
 
 	glDisable(GL_BLEND);
 
-	QuickFunc::UnbindFBO(set_window_width, set_window_height);
+	//composit
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//QuickFunc::UnbindFBO(set_window_width, set_window_height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	uniformLoc = glGetUniformLocation(compProg, "albedoTexture");
@@ -272,7 +278,7 @@ void Application::Draw() {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, geoBuff.textureID);
 
-	uniformLoc = glGetUniformLocation(compProg, "albedoTexture");
+	uniformLoc = glGetUniformLocation(compProg, "lightTexture");
 	glUniform1i(uniformLoc, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, lightBuff.textureID);
