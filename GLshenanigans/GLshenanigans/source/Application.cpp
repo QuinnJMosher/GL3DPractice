@@ -160,7 +160,11 @@ bool Application::Start() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
+	//other stuff
 	renderPlane = QuickFunc::ReadyPostProcessing(set_window_width, set_window_height);
+	geoProg = QuickFunc::makeProgram("./assets/shaders/differed/geoV.glsl", "./assets/shaders/differed/geoF.glsl");
+	lightProg = QuickFunc::makeProgram("./assets/shaders/differed/compV.glsl", "./assets/shaders/differed/lightF.glsl");
+	compProg = QuickFunc::makeProgram("./assets/shaders/differed/compV.glsl", "./assets/shaders/differed/compF.glsl");
 
 	//if all good
 	return true;	
@@ -211,28 +215,71 @@ bool Application::Update()
 
 void Application::Draw() {
 
-	//clear buffer
+	int uniformLoc;
+
+	glEnable(GL_DEPTH_TEST);
+
+	QuickFunc::BindFBO(geoBuff);
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//reset objects
-	Gizmos::clear();
+	glUseProgram(geoProg);
 
-	//add objects here
-	if (drawsGrid) {
-		DrawGrid();
-	}
+	uniformLoc = glGetUniformLocation(geoProg, "ProjectionView");
+	glUniformMatrix4fv(geoProg, 1, GL_FALSE, glm::value_ptr(camera.getProjectionView()));
 
-	if (drawsCentre) {
-		DrawCentre();
-	}
+	uniformLoc = glGetUniformLocation(geoProg, "View");
+	glUniformMatrix4fv(geoProg, 1, GL_FALSE, glm::value_ptr(camera.getView()));
 
-	//put things on the fbo
-	QuickFunc::clearFrameBuffer(frameBuff);
-	QuickFunc::drawToBuffer(renderProg, camera, grid, tex, normalMap, light, frameBuff);
+	glBindVertexArray(grid.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, grid.indexCount);
 
-	//put fbo on screen
-	QuickFunc::DrawPostProcessing(frameBuff, buffDisplay, postProg);
-	
+	QuickFunc::BindFBO(lightBuff);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	glUseProgram(lightProg);
+
+	uniformLoc = glGetUniformLocation(lightProg, "positionTexture");
+	glUniform1i(uniformLoc, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, geoBuff_posTex.textureID);
+
+	uniformLoc = glGetUniformLocation(lightProg, "normalTexture");
+	glUniform1i(uniformLoc, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, geoBuff_normTex.textureID);
+
+	uniformLoc = glGetUniformLocation(lightProg, "lightDirection");
+	glUniform3fv(uniformLoc, 1, &light.direction[0]);
+
+	uniformLoc = glGetUniformLocation(lightProg, "lightDiffuse");
+	glUniform3fv(uniformLoc, 1, &light.color[0]);
+
+	glBindVertexArray(renderPlane.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, renderPlane.indexCount);
+
+	glDisable(GL_BLEND);
+
+	QuickFunc::UnbindFBO(set_window_width, set_window_height);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	uniformLoc = glGetUniformLocation(compProg, "albedoTexture");
+	glUniform1i(uniformLoc, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, geoBuff.textureID);
+
+	uniformLoc = glGetUniformLocation(compProg, "albedoTexture");
+	glUniform1i(uniformLoc, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, lightBuff.textureID);
+
+	glBindVertexArray(renderPlane.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, renderPlane.indexCount);
+
 	//glfw update
 	glfwSwapBuffers(window);
 	glfwPollEvents();
